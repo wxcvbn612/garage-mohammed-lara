@@ -25,7 +25,7 @@ export default function VehicleManagement() {
   const [vehicles, setVehicles] = useKV<Vehicle[]>('vehicles', []);
   const [customers] = useKV<Customer[]>('customers', []);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState<string>('');
+  const [selectedCustomer, setSelectedCustomer] = useState<string>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
@@ -52,7 +52,7 @@ export default function VehicleManagement() {
       vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customerName.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCustomer = !selectedCustomer || vehicle.customerId === selectedCustomer;
+    const matchesCustomer = selectedCustomer === 'all' || vehicle.customerId === selectedCustomer;
     
     return matchesSearch && matchesCustomer;
   });
@@ -336,7 +336,7 @@ export default function VehicleManagement() {
                 <SelectValue placeholder="Tous les clients" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tous les clients</SelectItem>
+                <SelectItem value="all">Tous les clients</SelectItem>
                 {customers.map(customer => (
                   <SelectItem key={customer.id} value={customer.id}>
                     {customer.firstName} {customer.lastName}
