@@ -19,7 +19,7 @@ import {
   Camera,
   Eye
 } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Vehicle, Customer, FuelType, VehiclePhoto } from '@/entities';
 import { toast } from 'sonner';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
@@ -35,6 +35,22 @@ export default function VehicleManagement() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [viewingGallery, setViewingGallery] = useState<Vehicle | null>(null);
   const [viewingDetail, setViewingDetail] = useState<Vehicle | null>(null);
+  const [photoRefreshKey, setPhotoRefreshKey] = useState(0);
+
+  // Effet pour rafraîchir les photos quand nécessaire
+  useEffect(() => {
+    const refreshPhotos = async () => {
+      try {
+        const currentPhotos = await spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
+        setPhotos(currentPhotos);
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement des photos:', error);
+      }
+    };
+    
+    // Rafraîchir au montage du composant et lors des changements
+    refreshPhotos();
+  }, [photoRefreshKey, setPhotos]);
 
   const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
     customerId: '',
@@ -145,6 +161,8 @@ export default function VehicleManagement() {
 
   const handleViewGallery = (vehicle: Vehicle) => {
     setViewingGallery(vehicle);
+    // Rafraîchir les photos avant d'ouvrir la galerie
+    setPhotoRefreshKey(prev => prev + 1);
   };
 
   const handleViewDetail = (vehicle: Vehicle) => {
@@ -153,14 +171,15 @@ export default function VehicleManagement() {
 
   const handleCloseGallery = () => {
     setViewingGallery(null);
-    // Forcer une mise à jour des photos en récupérant les dernières données
-    setPhotos(current => [...current]);
+    // Déclencher un rafraîchissement des photos
+    setPhotoRefreshKey(prev => prev + 1);
   };
 
   const handleCloseDetail = () => {
     setViewingDetail(null);
   };
 
+  // Recalculer en temps réel le nombre de photos depuis le storage
   const getVehiclePhotoCount = (vehicleId: string) => {
     return photos.filter(photo => photo.vehicleId === vehicleId).length;
   };
@@ -205,7 +224,8 @@ export default function VehicleManagement() {
       ) : viewingGallery ? (
         <VehiclePhotoGallery 
           vehicle={viewingGallery} 
-          onClose={handleCloseGallery} 
+          onClose={handleCloseGallery}
+          onPhotoAdded={() => setPhotoRefreshKey(prev => prev + 1)}
         />
       ) : (
         <>

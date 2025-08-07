@@ -19,16 +19,17 @@ import {
   ArrowRight,
   ImageSquare
 } from '@phosphor-icons/react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { VehiclePhoto, Vehicle, Repair } from '@/entities';
 import { toast } from 'sonner';
 
 interface VehiclePhotoGalleryProps {
   vehicle: Vehicle;
   onClose: () => void;
+  onPhotoAdded?: () => void;
 }
 
-export default function VehiclePhotoGallery({ vehicle, onClose }: VehiclePhotoGalleryProps) {
+export default function VehiclePhotoGallery({ vehicle, onClose, onPhotoAdded }: VehiclePhotoGalleryProps) {
   const [photos, setPhotos] = useKV<VehiclePhoto[]>('vehicle-photos', []);
   const [repairs] = useKV<Repair[]>('repairs', []);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -43,6 +44,20 @@ export default function VehiclePhotoGallery({ vehicle, onClose }: VehiclePhotoGa
     description: '',
     repairId: ''
   });
+
+  // Rafraîchir les photos lors de l'ouverture de la galerie
+  useEffect(() => {
+    const refreshPhotos = async () => {
+      try {
+        const currentPhotos = await spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
+        setPhotos(currentPhotos);
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement des photos:', error);
+      }
+    };
+    
+    refreshPhotos();
+  }, [setPhotos]);
 
   // Filtrer les photos du véhicule actuel
   const vehiclePhotos = photos.filter(photo => photo.vehicleId === vehicle.id);
@@ -124,11 +139,21 @@ export default function VehiclePhotoGallery({ vehicle, onClose }: VehiclePhotoGa
     
     setIsAddDialogOpen(false);
     toast.success('Photo ajoutée avec succès');
+    
+    // Notifier le parent qu'une photo a été ajoutée
+    if (onPhotoAdded) {
+      onPhotoAdded();
+    }
   };
 
   const handleDeletePhoto = (photoId: string) => {
     setPhotos(current => current.filter(p => p.id !== photoId));
     toast.success('Photo supprimée');
+    
+    // Notifier le parent qu'une photo a été supprimée
+    if (onPhotoAdded) {
+      onPhotoAdded();
+    }
   };
 
   const handleViewPhoto = (photo: VehiclePhoto) => {
