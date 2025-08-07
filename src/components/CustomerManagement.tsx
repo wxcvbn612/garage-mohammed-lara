@@ -6,11 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, User, Phone, Mail, MapPin, Edit, Trash2, Search, Eye } from '@phosphor-icons/react';
+import { Plus, User, Phone, Mail, MapPin, Edit, Trash2, Search, Eye, ArrowLeft } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
 import { useKV } from '@github/spark/hooks';
-import CustomerDetailView from './CustomerDetailView';
+import CustomerDetailPage from './CustomerDetailPage';
 
 interface CustomerManagementProps {
   isOpen?: boolean;
@@ -22,7 +22,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
-  const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -116,7 +116,12 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
 
   const handleViewCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
-    setIsDetailViewOpen(true);
+    setViewMode('detail');
+  };
+
+  const handleBackToList = () => {
+    setSelectedCustomer(null);
+    setViewMode('list');
   };
 
   const handleDeleteCustomer = async (customerId: string) => {
@@ -129,6 +134,16 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       }
     }
   };
+
+  // Afficher la page de détail du client si un client est sélectionné
+  if (viewMode === 'detail' && selectedCustomer) {
+    return (
+      <CustomerDetailPage 
+        customer={selectedCustomer}
+        onBack={handleBackToList}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -319,13 +334,6 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Vue détaillée du client */}
-      <CustomerDetailView 
-        customer={selectedCustomer}
-        isOpen={isDetailViewOpen}
-        onOpenChange={setIsDetailViewOpen}
-      />
     </div>
   );
 }
