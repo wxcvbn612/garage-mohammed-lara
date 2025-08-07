@@ -67,6 +67,13 @@ export default function VehicleManagement() {
       return;
     }
 
+    // Vérifier que le client sélectionné existe
+    const selectedCustomerExists = customers.find(c => c.id === newVehicle.customerId);
+    if (!selectedCustomerExists) {
+      toast.error('Le client sélectionné n\'existe pas');
+      return;
+    }
+
     const vehicle: Vehicle = {
       id: Date.now().toString(),
       ...newVehicle as Omit<Vehicle, 'id'>,
@@ -196,7 +203,7 @@ export default function VehicleManagement() {
               </DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+              <div className="space-y-2 col-span-2">
                 <Label htmlFor="customer">Client *</Label>
                 <Select 
                   value={newVehicle.customerId} 
@@ -206,13 +213,24 @@ export default function VehicleManagement() {
                     <SelectValue placeholder="Sélectionner un client" />
                   </SelectTrigger>
                   <SelectContent>
-                    {customers.map(customer => (
-                      <SelectItem key={customer.id} value={customer.id}>
-                        {customer.firstName} {customer.lastName}
-                      </SelectItem>
-                    ))}
+                    {customers.length === 0 ? (
+                      <div className="p-2 text-sm text-muted-foreground">
+                        Aucun client disponible. Veuillez d'abord ajouter des clients.
+                      </div>
+                    ) : (
+                      customers.map(customer => (
+                        <SelectItem key={customer.id} value={customer.id}>
+                          {customer.firstName} {customer.lastName}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
+                {customers.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Vous devez d'abord ajouter des clients dans la section "Clients".
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -323,11 +341,26 @@ export default function VehicleManagement() {
                 onClick={() => {
                   setIsAddDialogOpen(false);
                   setEditingVehicle(null);
+                  setNewVehicle({
+                    customerId: '',
+                    brand: '',
+                    model: '',
+                    year: new Date().getFullYear(),
+                    licensePlate: '',
+                    vin: '',
+                    mileage: 0,
+                    fuelType: 'essence',
+                    color: '',
+                    notes: ''
+                  });
                 }}
               >
                 Annuler
               </Button>
-              <Button onClick={editingVehicle ? handleUpdateVehicle : handleAddVehicle}>
+              <Button 
+                onClick={editingVehicle ? handleUpdateVehicle : handleAddVehicle}
+                disabled={customers.length === 0}
+              >
                 {editingVehicle ? 'Modifier' : 'Ajouter'}
               </Button>
             </div>
@@ -490,12 +523,15 @@ export default function VehicleManagement() {
           <CardContent className="text-center py-12">
             <Car className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-muted-foreground mb-2">
-              Aucun véhicule trouvé
+              {customers.length === 0 ? 'Aucun client disponible' : 'Aucun véhicule trouvé'}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {searchTerm || selectedCustomer 
-                ? 'Aucun véhicule ne correspond à vos critères de recherche.'
-                : 'Commencez par ajouter un véhicule.'
+              {customers.length === 0 
+                ? 'Vous devez d\'abord ajouter des clients dans la section "Clients" avant de pouvoir ajouter des véhicules.'
+                : (searchTerm || selectedCustomer !== 'all'
+                  ? 'Aucun véhicule ne correspond à vos critères de recherche.'
+                  : 'Commencez par ajouter un véhicule.'
+                )
               }
             </p>
           </CardContent>
