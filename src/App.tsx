@@ -21,6 +21,7 @@ import AppointmentCalendar from './components/AppointmentCalendar';
 import StockManagement from './components/StockManagement';
 import InvoiceManagement from './components/InvoiceManagement';
 import FinancialDashboard from './components/FinancialDashboard';
+import CustomerManagement from './components/CustomerManagement';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -44,6 +45,7 @@ function App() {
 
   const navigation = [
     { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp },
+    { id: 'customers', label: 'Clients', icon: Users },
     { id: 'repairs', label: 'Réparations', icon: Wrench },
     { id: 'appointments', label: 'Rendez-vous', icon: Calendar },
     { id: 'stock', label: 'Stock', icon: Package },
@@ -53,6 +55,8 @@ function App() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'customers':
+        return <CustomerManagement />;
       case 'repairs':
         return <RepairsList />;
       case 'appointments':
