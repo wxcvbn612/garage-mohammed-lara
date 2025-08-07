@@ -39,7 +39,7 @@ export class EntityManager {
    */
   async persist<T extends BaseEntity>(entityName: string, entity: Omit<T, 'id' | 'createdAt' | 'updatedAt'>): Promise<T> {
     // Vérification que spark.kv est disponible
-    if (typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+    if (typeof window === 'undefined' || typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
       throw new Error('Service de stockage non disponible');
     }
 
@@ -51,34 +51,48 @@ export class EntityManager {
       updatedAt: now
     } as T;
 
-    const existingEntities = await this.findAll<T>(entityName);
-    existingEntities.push(newEntity);
-    
-    await spark.kv.set(`entities_${entityName}`, existingEntities);
-    return newEntity;
+    try {
+      const existingEntities = await this.findAll<T>(entityName);
+      existingEntities.push(newEntity);
+      
+      await window.spark.kv.set(`entities_${entityName}`, existingEntities);
+      return newEntity;
+    } catch (error) {
+      console.error('Erreur lors de la persistance:', error);
+      throw new Error(`Impossible de sauvegarder l'entité: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    }
   }
 
   /**
    * Met à jour une entité existante
    */
   async update<T extends BaseEntity>(entityName: string, id: string, updates: Partial<Omit<T, 'id' | 'createdAt'>>): Promise<T | null> {
-    const entities = await this.findAll<T>(entityName);
-    const entityIndex = entities.findIndex(e => e.id === id);
-    
-    if (entityIndex === -1) {
-      return null;
+    if (typeof window === 'undefined' || typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+      throw new Error('Service de stockage non disponible');
     }
 
-    const updatedEntity = {
-      ...entities[entityIndex],
-      ...updates,
-      updatedAt: new Date()
-    };
+    try {
+      const entities = await this.findAll<T>(entityName);
+      const entityIndex = entities.findIndex(e => e.id === id);
+      
+      if (entityIndex === -1) {
+        return null;
+      }
 
-    entities[entityIndex] = updatedEntity;
-    await spark.kv.set(`entities_${entityName}`, entities);
-    
-    return updatedEntity;
+      const updatedEntity = {
+        ...entities[entityIndex],
+        ...updates,
+        updatedAt: new Date()
+      };
+
+      entities[entityIndex] = updatedEntity;
+      await window.spark.kv.set(`entities_${entityName}`, entities);
+      
+      return updatedEntity;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour:', error);
+      throw new Error(`Impossible de mettre à jour l'entité: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    }
   }
 
   /**
@@ -94,12 +108,17 @@ export class EntityManager {
    */
   async findAll<T extends BaseEntity>(entityName: string): Promise<T[]> {
     // Vérification que spark.kv est disponible
-    if (typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+    if (typeof window === 'undefined' || typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
       console.warn('Service de stockage non disponible, retour d\'un tableau vide');
       return [];
     }
     
-    return await spark.kv.get(`entities_${entityName}`) || [];
+    try {
+      return await window.spark.kv.get(`entities_${entityName}`) || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+      return [];
+    }
   }
 
   /**
@@ -119,16 +138,25 @@ export class EntityManager {
    * Supprime une entité
    */
   async remove<T extends BaseEntity>(entityName: string, id: string): Promise<boolean> {
-    const entities = await this.findAll<T>(entityName);
-    const initialLength = entities.length;
-    const filteredEntities = entities.filter(e => e.id !== id);
-    
-    if (filteredEntities.length === initialLength) {
-      return false;
+    if (typeof window === 'undefined' || typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+      throw new Error('Service de stockage non disponible');
     }
 
-    await spark.kv.set(`entities_${entityName}`, filteredEntities);
-    return true;
+    try {
+      const entities = await this.findAll<T>(entityName);
+      const initialLength = entities.length;
+      const filteredEntities = entities.filter(e => e.id !== id);
+      
+      if (filteredEntities.length === initialLength) {
+        return false;
+      }
+
+      await window.spark.kv.set(`entities_${entityName}`, filteredEntities);
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      throw new Error(`Impossible de supprimer l'entité: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    }
   }
 
   /**

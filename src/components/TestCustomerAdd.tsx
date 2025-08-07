@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { customerService } from '@/services';
@@ -6,6 +6,33 @@ import { toast } from 'sonner';
 
 export default function TestCustomerAdd() {
   const [isLoading, setIsLoading] = useState(false);
+  const [sparkStatus, setSparkStatus] = useState<string>('Vérification...');
+
+  useEffect(() => {
+    const checkSparkStatus = () => {
+      if (typeof window === 'undefined') {
+        setSparkStatus('❌ Window non disponible');
+        return;
+      }
+      
+      if (typeof window.spark === 'undefined') {
+        setSparkStatus('❌ window.spark non défini');
+        return;
+      }
+      
+      if (typeof window.spark.kv === 'undefined') {
+        setSparkStatus('❌ window.spark.kv non défini');
+        return;
+      }
+      
+      setSparkStatus('✅ API Spark disponible');
+    };
+
+    checkSparkStatus();
+    const interval = setInterval(checkSparkStatus, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const addTestCustomer = async () => {
     setIsLoading(true);
@@ -50,9 +77,12 @@ export default function TestCustomerAdd() {
         <CardTitle>Test Ajout Client</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="text-sm text-muted-foreground p-2 bg-muted rounded">
+          Status: {sparkStatus}
+        </div>
         <Button 
           onClick={addTestCustomer} 
-          disabled={isLoading}
+          disabled={isLoading || !sparkStatus.includes('✅')}
           className="w-full"
         >
           {isLoading ? 'Ajout...' : 'Ajouter Client Test'}
@@ -61,6 +91,7 @@ export default function TestCustomerAdd() {
           onClick={listAllCustomers} 
           variant="outline"
           className="w-full"
+          disabled={!sparkStatus.includes('✅')}
         >
           Lister tous les clients
         </Button>

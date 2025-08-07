@@ -12,6 +12,7 @@ import { Plus, User, Car, Phone, Mail, MapPin, Edit, Trash2, Search } from '@pho
 import { Customer, Vehicle } from '@/entities';
 import { customerService, vehicleService } from '@/services';
 import { toast } from 'sonner';
+import { useSparkReady } from '@/hooks/useSparkReady';
 
 interface CustomerManagementProps {
   isOpen?: boolean;
@@ -19,6 +20,7 @@ interface CustomerManagementProps {
 }
 
 export default function CustomerManagement({ isOpen, onOpenChange }: CustomerManagementProps) {
+  const { isReady: sparkReady, error: sparkError } = useSparkReady();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -28,6 +30,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [activeTab, setActiveTab] = useState('customers');
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Formulaire client
   const [customerForm, setCustomerForm] = useState({
@@ -56,20 +59,33 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   });
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (sparkReady) {
+      loadData();
+    } else if (sparkError) {
+      setError(sparkError);
+      setIsLoading(false);
+    }
+  }, [sparkReady, sparkError]);
 
   const loadData = async () => {
     try {
       setIsLoading(true);
+      setError(null);
+      
       const [customersData, vehiclesData] = await Promise.all([
         customerService.getAllCustomers(),
         vehicleService.getAllVehicles()
       ]);
+      
       setCustomers(customersData);
       setVehicles(vehiclesData);
+      
+      console.log('Données chargées:', { customers: customersData.length, vehicles: vehiclesData.length });
     } catch (error) {
-      toast.error('Erreur lors du chargement des données');
+      console.error('Erreur de chargement:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors du chargement';
+      setError(errorMessage);
+      toast.error(`Erreur lors du chargement des données: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -192,7 +208,28 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Chargement...</div>
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <div className="text-muted-foreground">Chargement des données...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center space-y-4">
+          <div className="text-destructive text-lg font-medium">
+            Erreur lors du chargement
+          </div>
+          <div className="text-muted-foreground">
+            {error}
+          </div>
+          <Button onClick={loadData} variant="outline">
+            Réessayer
+          </Button>
+        </div>
       </div>
     );
   }
