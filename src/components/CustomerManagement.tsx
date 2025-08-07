@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, User, Phone, Mail, MapPin, Edit, Trash2, Search } from '@phosphor-icons/react';
+import { Plus, User, Phone, Mail, MapPin, Edit, Trash2, Search, Eye } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
 import { useKV } from '@github/spark/hooks';
+import CustomerDetailView from './CustomerDetailView';
 
 interface CustomerManagementProps {
   isOpen?: boolean;
@@ -21,6 +22,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
+  const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -112,6 +114,11 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     return vehicles.filter(vehicle => vehicle.customerId === customerId);
   };
 
+  const handleViewCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setIsDetailViewOpen(true);
+  };
+
   const handleDeleteCustomer = async (customerId: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
       try {
@@ -155,6 +162,9 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
                   {customer.firstName} {customer.lastName}
                 </CardTitle>
                 <div className="flex items-center gap-1">
+                  <Button size="sm" variant="ghost" onClick={() => handleViewCustomer(customer)}>
+                    <Eye className="w-4 h-4" />
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={() => setSelectedCustomer(customer)}>
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -186,6 +196,17 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
                 <span className="text-xs text-muted-foreground">
                   Client depuis {new Date(customer.createdAt).toLocaleDateString()}
                 </span>
+              </div>
+              <div className="pt-3 border-t">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => handleViewCustomer(customer)}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Voir détails
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -298,6 +319,13 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Vue détaillée du client */}
+      <CustomerDetailView 
+        customer={selectedCustomer}
+        isOpen={isDetailViewOpen}
+        onOpenChange={setIsDetailViewOpen}
+      />
     </div>
   );
 }
