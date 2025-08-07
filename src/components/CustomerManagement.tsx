@@ -27,6 +27,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('customers');
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Formulaire client
   const [customerForm, setCustomerForm] = useState({
@@ -75,8 +76,53 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   };
 
   const handleAddCustomer = async () => {
+    if (isSubmitting) return;
+    
     try {
+      setIsSubmitting(true);
+      
+      // Vérification que spark est disponible
+      if (typeof window.spark === 'undefined') {
+        toast.error('Erreur: Service de stockage non disponible');
+        return;
+      }
+      
+      // Validation côté client
+      if (!customerForm.firstName.trim()) {
+        toast.error('Le prénom est requis');
+        return;
+      }
+      if (!customerForm.lastName.trim()) {
+        toast.error('Le nom est requis');
+        return;
+      }
+      if (!customerForm.email.trim()) {
+        toast.error('L\'email est requis');
+        return;
+      }
+      // Validation de l'email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(customerForm.email)) {
+        toast.error('L\'adresse email n\'est pas valide');
+        return;
+      }
+      if (!customerForm.phone.trim()) {
+        toast.error('Le téléphone est requis');
+        return;
+      }
+      if (!customerForm.address.trim()) {
+        toast.error('L\'adresse est requise');
+        return;
+      }
+      if (!customerForm.city.trim()) {
+        toast.error('La ville est requise');
+        return;
+      }
+
+      console.log('Tentative de création du client:', customerForm);
       const newCustomer = await customerService.createCustomer(customerForm);
+      console.log('Client créé avec succès:', newCustomer);
+      
       setCustomers(prev => [...prev, newCustomer]);
       setCustomerForm({
         firstName: '',
@@ -91,7 +137,10 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       setIsAddCustomerOpen(false);
       toast.success('Client ajouté avec succès');
     } catch (error) {
-      toast.error('Erreur lors de l\'ajout du client');
+      console.error('Erreur lors de l\'ajout du client:', error);
+      toast.error(`Erreur lors de l'ajout du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -285,50 +334,56 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">Prénom</Label>
+              <Label htmlFor="firstName">Prénom *</Label>
               <Input
                 id="firstName"
+                required
                 value={customerForm.firstName}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, firstName: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Nom</Label>
+              <Label htmlFor="lastName">Nom *</Label>
               <Input
                 id="lastName"
+                required
                 value={customerForm.lastName}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, lastName: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"
+                required
                 value={customerForm.email}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, email: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Téléphone</Label>
+              <Label htmlFor="phone">Téléphone *</Label>
               <Input
                 id="phone"
+                required
                 value={customerForm.phone}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, phone: e.target.value }))}
               />
             </div>
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="address">Adresse</Label>
+              <Label htmlFor="address">Adresse *</Label>
               <Input
                 id="address"
+                required
                 value={customerForm.address}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, address: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="city">Ville</Label>
+              <Label htmlFor="city">Ville *</Label>
               <Input
                 id="city"
+                required
                 value={customerForm.city}
                 onChange={(e) => setCustomerForm(prev => ({ ...prev, city: e.target.value }))}
               />
@@ -351,11 +406,11 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-4">
-            <Button variant="outline" onClick={() => setIsAddCustomerOpen(false)}>
+            <Button variant="outline" onClick={() => setIsAddCustomerOpen(false)} disabled={isSubmitting}>
               Annuler
             </Button>
-            <Button onClick={handleAddCustomer}>
-              Ajouter
+            <Button onClick={handleAddCustomer} disabled={isSubmitting}>
+              {isSubmitting ? 'Ajout en cours...' : 'Ajouter'}
             </Button>
           </div>
         </DialogContent>

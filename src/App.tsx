@@ -17,6 +17,7 @@ import {
   ChartBar
 } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { Toaster } from 'sonner';
 import RepairsList from './components/RepairsList';
 import AddRepairDialog from './components/AddRepairDialog';
 import AppointmentCalendar from './components/AppointmentCalendar';
@@ -28,6 +29,7 @@ import VehicleManagement from './components/VehicleManagement';
 import MechanicManagement from './components/MechanicManagement';
 import ReportsManagement from './components/ReportsManagement';
 import NotificationCenter from './components/NotificationCenter';
+import TestCustomerAdd from './components/TestCustomerAdd';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -137,6 +139,9 @@ function App() {
           {renderContent()}
         </main>
       </div>
+      
+      {/* Toaster pour les notifications */}
+      <Toaster position="top-right" richColors />
     </div>
   );
 }
@@ -265,6 +270,16 @@ function DashboardOverview({ stats }: { stats: DashboardStats }) {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Test Component */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Test du système</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TestCustomerAdd />
         </CardContent>
       </Card>
     </div>

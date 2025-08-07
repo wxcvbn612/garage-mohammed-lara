@@ -38,6 +38,11 @@ export class EntityManager {
    * Persiste une entité dans le stockage
    */
   async persist<T extends BaseEntity>(entityName: string, entity: Omit<T, 'id' | 'createdAt' | 'updatedAt'>): Promise<T> {
+    // Vérification que spark.kv est disponible
+    if (typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+      throw new Error('Service de stockage non disponible');
+    }
+
     const now = new Date();
     const newEntity = {
       ...entity,
@@ -88,6 +93,12 @@ export class EntityManager {
    * Trouve toutes les entités d'un type
    */
   async findAll<T extends BaseEntity>(entityName: string): Promise<T[]> {
+    // Vérification que spark.kv est disponible
+    if (typeof window.spark === 'undefined' || typeof window.spark.kv === 'undefined') {
+      console.warn('Service de stockage non disponible, retour d\'un tableau vide');
+      return [];
+    }
+    
     return await spark.kv.get(`entities_${entityName}`) || [];
   }
 
