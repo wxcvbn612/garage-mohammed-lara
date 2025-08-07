@@ -16,22 +16,25 @@ import {
   Fuel,
   Calendar,
   Info,
-  Camera
+  Camera,
+  Eye
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Vehicle, Customer, FuelType, VehiclePhoto } from '@/entities';
 import { toast } from 'sonner';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
+import VehicleDetailView from './VehicleDetailView';
 
 export default function VehicleManagement() {
   const [vehicles, setVehicles] = useKV<Vehicle[]>('vehicles', []);
   const [customers] = useKV<Customer[]>('customers', []);
-  const [photos] = useKV<VehiclePhoto[]>('vehicle-photos', []);
+  const [photos, setPhotos] = useKV<VehiclePhoto[]>('vehicle-photos', []);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<string>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [viewingGallery, setViewingGallery] = useState<Vehicle | null>(null);
+  const [viewingDetail, setViewingDetail] = useState<Vehicle | null>(null);
 
   const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
     customerId: '',
@@ -144,6 +147,20 @@ export default function VehicleManagement() {
     setViewingGallery(vehicle);
   };
 
+  const handleViewDetail = (vehicle: Vehicle) => {
+    setViewingDetail(vehicle);
+  };
+
+  const handleCloseGallery = () => {
+    setViewingGallery(null);
+    // Forcer une mise à jour des photos en récupérant les dernières données
+    setPhotos(current => [...current]);
+  };
+
+  const handleCloseDetail = () => {
+    setViewingDetail(null);
+  };
+
   const getVehiclePhotoCount = (vehicleId: string) => {
     return photos.filter(photo => photo.vehicleId === vehicleId).length;
   };
@@ -180,10 +197,15 @@ export default function VehicleManagement() {
 
   return (
     <div className="space-y-6">
-      {viewingGallery ? (
+      {viewingDetail ? (
+        <VehicleDetailView 
+          vehicle={viewingDetail} 
+          onClose={handleCloseDetail} 
+        />
+      ) : viewingGallery ? (
         <VehiclePhotoGallery 
           vehicle={viewingGallery} 
-          onClose={() => setViewingGallery(null)} 
+          onClose={handleCloseGallery} 
         />
       ) : (
         <>
@@ -416,6 +438,14 @@ export default function VehicleManagement() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => handleViewDetail(vehicle)}
+                      title="Voir les détails"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => handleViewGallery(vehicle)}
                       title="Galerie photos"
                     >
@@ -491,8 +521,17 @@ export default function VehicleManagement() {
                   )}
                 </div>
 
-                {/* Photos section */}
-                <div className="pt-2 border-t">
+                {/* Actions principales */}
+                <div className="pt-2 border-t space-y-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => handleViewDetail(vehicle)}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Voir les détails
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"

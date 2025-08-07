@@ -29,7 +29,6 @@ import VehicleManagement from './components/VehicleManagement';
 import MechanicManagement from './components/MechanicManagement';
 import ReportsManagement from './components/ReportsManagement';
 import NotificationCenter from './components/NotificationCenter';
-import TestCustomerAdd from './components/TestCustomerAdd';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -270,16 +269,6 @@ function DashboardOverview({ stats }: { stats: DashboardStats }) {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Test Component */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Test du système</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TestCustomerAdd />
         </CardContent>
       </Card>
     </div>

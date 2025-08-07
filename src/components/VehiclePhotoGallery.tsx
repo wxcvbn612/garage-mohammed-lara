@@ -108,12 +108,20 @@ export default function VehiclePhotoGallery({ vehicle, onClose }: VehiclePhotoGa
     };
 
     setPhotos(current => [...current, photo]);
+    
+    // Réinitialiser le formulaire
     setNewPhoto({
       vehicleId: vehicle.id,
       category: 'general',
       description: '',
       repairId: ''
     });
+    
+    // Réinitialiser l'input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    
     setIsAddDialogOpen(false);
     toast.success('Photo ajoutée avec succès');
   };
