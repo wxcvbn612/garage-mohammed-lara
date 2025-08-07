@@ -2,51 +2,65 @@
 
 ## Core Purpose & Success
 
-**Mission Statement**: Créer un système complet de gestion de garage automobile permettant de gérer efficacement les clients, véhicules, réparations, stock et facturation avec une architecture inspirée des patterns Symfony.
+**Mission Statement**: Créer un système complet de gestion de garage automobile permettant de gérer efficacement les clients, véhicules, mécaniciens, réparations, stock et facturation avec une architecture moderne et des fonctionnalités avancées de reporting.
 
 **Success Indicators**: 
 - Réduction du temps de gestion administrative de 50%
 - Traçabilité complète des réparations et interventions
 - Gestion optimisée du stock avec alertes automatiques
 - Facturation automatisée et suivi des paiements
+- Rapports de performance en temps réel
+- Notifications automatiques pour les événements critiques
 
 **Experience Qualities**: Professionnel, Efficace, Intuitif
 
 ## Project Classification & Approach
 
-**Complexity Level**: Complex Application (gestion avancée avec entités multiples, services métier structurés)
+**Complexity Level**: Complex Application (gestion avancée avec entités multiples, services métier structurés, système de notifications en temps réel)
 
-**Primary User Activity**: Acting & Creating (gestion active des données métier)
+**Primary User Activity**: Acting & Creating (gestion active des données métier avec analyse avancée)
 
 ## Thought Process for Feature Selection
 
-**Core Problem Analysis**: Les garages automobiles ont besoin d'un système unifié pour gérer leurs activités quotidiennes, de la prise de rendez-vous à la facturation, en passant par le suivi des réparations et la gestion du stock.
+**Core Problem Analysis**: Les garages automobiles ont besoin d'un système unifié et moderne pour gérer leurs activités quotidiennes, incluant la gestion du personnel, le suivi en temps réel, et l'analyse de performance.
 
-**User Context**: Mécaniciens et gestionnaires de garage utilisant le système tout au long de la journée pour suivre l'avancement des travaux, gérer les clients et optimiser les opérations.
+**User Context**: Mécaniciens, gestionnaires et propriétaires de garage utilisant le système tout au long de la journée avec des besoins différenciés selon leur rôle.
 
-**Critical Path**: Client → Véhicule → Diagnostic → Réparation → Facturation → Paiement
+**Critical Path**: Client → Véhicule → Assignation Mécanicien → Diagnostic → Réparation → Facturation → Paiement → Analyse
 
 **Key Moments**: 
 1. Enregistrement d'un nouveau client et de son véhicule
-2. Création et suivi d'une réparation
-3. Génération et paiement des factures
+2. Assignation d'un mécanicien spécialisé à une réparation
+3. Suivi en temps réel de l'avancement des travaux
+4. Génération automatique de rapports de performance
+5. Notifications en temps réel pour les événements critiques
 
 ## Essential Features
 
-### Gestion des Entités (inspirée Doctrine ORM)
-- **Functionality**: Système d'entités structurées avec relations (Customer, Vehicle, Repair, etc.)
+### Gestion des Entités (Architecture Structurée)
+- **Functionality**: Système d'entités structurées avec relations (Customer, Vehicle, Mechanic, Repair, etc.)
 - **Purpose**: Assurer la cohérence et l'intégrité des données métier
 - **Success Criteria**: Validation automatique des données, relations cohérentes entre entités
 
-### Services Métier (pattern Symfony Services)
-- **Functionality**: Couche de services encapsulant la logique métier
-- **Purpose**: Séparer la logique métier de la présentation, faciliter la maintenance
-- **Success Criteria**: Code modulaire, logique métier centralisée et testable
-
 ### Gestion des Clients et Véhicules
-- **Functionality**: CRUD complet avec recherche et historique
+- **Functionality**: CRUD complet avec recherche avancée et historique détaillé
 - **Purpose**: Centraliser les informations clients et leur parc automobile
-- **Success Criteria**: Accès rapide aux informations, historique complet
+- **Success Criteria**: Accès rapide aux informations, historique complet, intégration véhicule-client
+
+### Gestion des Mécaniciens
+- **Functionality**: Profils complets avec spécialisations, tarifs, et performance
+- **Purpose**: Optimiser l'assignation des tâches selon les compétences
+- **Success Criteria**: Assignation intelligente, suivi de performance, gestion des compétences
+
+### Système de Notifications en Temps Réel
+- **Functionality**: Notifications automatiques pour événements critiques
+- **Purpose**: Maintenir l'équipe informée des changements importants
+- **Success Criteria**: Notifications pertinentes, non intrusives, avec actions rapides
+
+### Rapports et Analyses Avancées
+- **Functionality**: Tableaux de bord avec métriques de performance et export
+- **Purpose**: Fournir des insights pour l'optimisation des opérations
+- **Success Criteria**: Rapports pertinents, données exploitables, export facile
 
 ### Système de Réparations Avancé
 - **Functionality**: Gestion complète du cycle de vie des réparations avec statuts, priorités

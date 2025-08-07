@@ -9,26 +9,41 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.15 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.15 0 0);
+  /* Palette professionnelle inspirée des applications d'entreprise */
+  --background: oklch(0.99 0.005 240);
+  --foreground: oklch(0.15 0.01 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.01 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.55 0.15 230);
+  --popover-foreground: oklch(0.15 0.01 240);
+  
+  /* Bleu professionnel pour les actions principales */
+  --primary: oklch(0.55 0.18 230);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.65 0.02 240);
-  --secondary-foreground: oklch(0.15 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.60 0.14 140);
+  
+  /* Gris professionnel pour les actions secondaires */
+  --secondary: oklch(0.96 0.005 240);
+  --secondary-foreground: oklch(0.25 0.02 240);
+  
+  /* Arrière-plans atténués */
+  --muted: oklch(0.97 0.01 240);
+  --muted-foreground: oklch(0.45 0.02 240);
+  
+  /* Vert professionnel pour les accents positifs */
+  --accent: oklch(0.65 0.14 150);
   --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.62 0.21 25);
+  
+  /* Rouge professionnel pour les actions destructives */
+  --destructive: oklch(0.62 0.20 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.90 0 0);
-  --input: oklch(0.90 0 0);
-  --ring: oklch(0.55 0.15 230);
-  --radius: 0.5rem;
+  
+  /* Bordures subtiles */
+  --border: oklch(0.92 0.01 240);
+  --input: oklch(0.92 0.01 240);
+  --ring: oklch(0.55 0.18 230);
+  
+  /* Rayon moderne et cohérent */
+  --radius: 0.75rem;
 }
 
 @theme {

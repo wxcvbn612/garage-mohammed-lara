@@ -12,7 +12,9 @@ import {
   Car,
   Users,
   Clock,
-  AlertTriangle 
+  AlertTriangle,
+  User,
+  ChartBar
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import RepairsList from './components/RepairsList';
@@ -22,6 +24,10 @@ import StockManagement from './components/StockManagement';
 import InvoiceManagement from './components/InvoiceManagement';
 import FinancialDashboard from './components/FinancialDashboard';
 import CustomerManagement from './components/CustomerManagement';
+import VehicleManagement from './components/VehicleManagement';
+import MechanicManagement from './components/MechanicManagement';
+import ReportsManagement from './components/ReportsManagement';
+import NotificationCenter from './components/NotificationCenter';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -46,10 +52,13 @@ function App() {
   const navigation = [
     { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp },
     { id: 'customers', label: 'Clients', icon: Users },
+    { id: 'vehicles', label: 'Véhicules', icon: Car },
+    { id: 'mechanics', label: 'Mécaniciens', icon: User },
     { id: 'repairs', label: 'Réparations', icon: Wrench },
     { id: 'appointments', label: 'Rendez-vous', icon: Calendar },
     { id: 'stock', label: 'Stock', icon: Package },
     { id: 'invoices', label: 'Facturation', icon: Euro },
+    { id: 'reports', label: 'Rapports', icon: ChartBar },
     { id: 'analytics', label: 'Analyses', icon: TrendingUp }
   ];
 
@@ -57,6 +66,10 @@ function App() {
     switch (activeTab) {
       case 'customers':
         return <CustomerManagement />;
+      case 'vehicles':
+        return <VehicleManagement />;
+      case 'mechanics':
+        return <MechanicManagement />;
       case 'repairs':
         return <RepairsList />;
       case 'appointments':
@@ -65,6 +78,8 @@ function App() {
         return <StockManagement />;
       case 'invoices':
         return <InvoiceManagement />;
+      case 'reports':
+        return <ReportsManagement />;
       case 'analytics':
         return <FinancialDashboard />;
       default:
@@ -87,6 +102,7 @@ function App() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <NotificationCenter />
             <Badge variant="outline" className="flex items-center gap-1">
               <Users className="w-4 h-4" />
               Mohammed Larache
