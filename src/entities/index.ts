@@ -27,6 +27,19 @@ export interface Vehicle extends BaseEntity {
   fuelType: 'essence' | 'diesel' | 'hybride' | 'electrique';
   color?: string;
   notes?: string;
+  photos?: VehiclePhoto[];
+}
+
+export interface VehiclePhoto extends BaseEntity {
+  vehicleId: string;
+  imageUrl: string;
+  imageData: string; // Base64 encoded image data
+  fileName: string;
+  fileSize: number;
+  category: 'avant' | 'pendant' | 'apres' | 'general';
+  description?: string;
+  repairId?: string; // Lié à une réparation spécifique
+  captureDate: Date;
 }
 
 export interface Repair extends BaseEntity {

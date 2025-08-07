@@ -43,9 +43,14 @@
 - **Success Criteria**: Validation automatique des données, relations cohérentes entre entités
 
 ### Gestion des Clients et Véhicules
-- **Functionality**: CRUD complet avec recherche avancée et historique détaillé
-- **Purpose**: Centraliser les informations clients et leur parc automobile
-- **Success Criteria**: Accès rapide aux informations, historique complet, intégration véhicule-client
+- **Functionality**: CRUD complet avec recherche avancée, historique détaillé et galerie photos pour documenter l'état des véhicules
+- **Purpose**: Centraliser les informations clients et leur parc automobile avec documentation visuelle complète
+- **Success Criteria**: Accès rapide aux informations, historique complet, intégration véhicule-client, suivi photographique avant/pendant/après réparations
+
+### Galerie Photos des Véhicules
+- **Functionality**: Système complet de gestion d'images pour chaque véhicule avec catégories (avant/pendant/après/général), descriptions, et association aux réparations
+- **Purpose**: Documenter visuellement l'état des véhicules pour assurer la transparence client et la traçabilité des interventions
+- **Success Criteria**: Upload facile d'images, organisation par catégories, visualisation en plein écran, export des photos, association aux réparations spécifiques
 
 ### Gestion des Mécaniciens
 - **Functionality**: Profils complets avec spécialisations, tarifs, et performance

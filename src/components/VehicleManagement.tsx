@@ -15,19 +15,23 @@ import {
   Trash,
   Fuel,
   Calendar,
-  Info
+  Info,
+  Camera
 } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { Vehicle, Customer, FuelType } from '@/entities';
+import { Vehicle, Customer, FuelType, VehiclePhoto } from '@/entities';
 import { toast } from 'sonner';
+import VehiclePhotoGallery from './VehiclePhotoGallery';
 
 export default function VehicleManagement() {
   const [vehicles, setVehicles] = useKV<Vehicle[]>('vehicles', []);
   const [customers] = useKV<Customer[]>('customers', []);
+  const [photos] = useKV<VehiclePhoto[]>('vehicle-photos', []);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<string>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [viewingGallery, setViewingGallery] = useState<Vehicle | null>(null);
 
   const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
     customerId: '',
@@ -129,6 +133,14 @@ export default function VehicleManagement() {
     toast.success('Véhicule supprimé avec succès');
   };
 
+  const handleViewGallery = (vehicle: Vehicle) => {
+    setViewingGallery(vehicle);
+  };
+
+  const getVehiclePhotoCount = (vehicleId: string) => {
+    return photos.filter(photo => photo.vehicleId === vehicleId).length;
+  };
+
   const getFuelTypeIcon = (fuelType: string) => {
     switch (fuelType) {
       case 'essence':
@@ -161,7 +173,14 @@ export default function VehicleManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {viewingGallery ? (
+        <VehiclePhotoGallery 
+          vehicle={viewingGallery} 
+          onClose={() => setViewingGallery(null)} 
+        />
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Gestion des Véhicules</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
@@ -364,6 +383,17 @@ export default function VehicleManagement() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => handleViewGallery(vehicle)}
+                      title="Galerie photos"
+                    >
+                      <Camera className="w-4 h-4" />
+                      <span className="ml-1 text-xs">
+                        {getVehiclePhotoCount(vehicle.id)}
+                      </span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => handleEditVehicle(vehicle)}
                     >
                       <Edit className="w-4 h-4" />
@@ -428,6 +458,19 @@ export default function VehicleManagement() {
                   )}
                 </div>
 
+                {/* Photos section */}
+                <div className="pt-2 border-t">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => handleViewGallery(vehicle)}
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    Galerie photos ({getVehiclePhotoCount(vehicle.id)})
+                  </Button>
+                </div>
+
                 {vehicle.notes && (
                   <div className="pt-2 border-t">
                     <div className="flex items-start gap-2">
@@ -457,6 +500,8 @@ export default function VehicleManagement() {
             </p>
           </CardContent>
         </Card>
+      )}
+        </>
       )}
     </div>
   );
