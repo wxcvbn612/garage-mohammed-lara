@@ -11,8 +11,8 @@ import {
   Car, 
   Plus, 
   Search, 
-  Edit,
-  X,
+  PencilSimple,
+  Trash,
   Fuel,
   Calendar,
   Info,
@@ -480,7 +480,7 @@ export default function VehicleManagement() {
                       onClick={() => handleEditVehicle(vehicle)}
                       title="Modifier"
                     >
-                      <Edit className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
@@ -488,7 +488,7 @@ export default function VehicleManagement() {
                       onClick={() => handleDeleteVehicle(vehicle.id)}
                       title="Supprimer"
                     >
-                      <X className="w-4 h-4 text-destructive" />
+                      <Trash className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
                 </div>

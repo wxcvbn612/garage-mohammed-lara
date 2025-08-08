@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, User, Phone, Mail, MapPin, Edit, X, Search, Eye, ArrowLeft } from '@phosphor-icons/react';
+import { Plus, User, Phone, Mail, MapPin, PencilSimple, Trash, Search, Eye, ArrowLeft } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
 import { useKV } from '@github/spark/hooks';
@@ -181,10 +181,10 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
                     <Eye className="w-4 h-4" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setSelectedCustomer(customer)} title="Modifier">
-                    <Edit className="w-4 h-4" />
+                    <PencilSimple className="w-4 h-4" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
-                    <X className="w-4 h-4 text-destructive" />
+                    <Trash className="w-4 h-4 text-destructive" />
                   </Button>
                 </div>
               </div>
