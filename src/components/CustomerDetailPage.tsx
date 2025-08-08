@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,11 +31,16 @@ interface CustomerDetailPageProps {
 
 export default function CustomerDetailPage({ customer, onBack }: CustomerDetailPageProps) {
   const settings = useAppSettings();
-  const { vehicles } = useVehicles();
+  const { vehicles, refreshVehicles } = useVehicles();
   const [invoices] = useKV<Invoice[]>('invoices', []);
   const [payments] = useKV<Payment[]>('payments', []);
   const [repairs] = useKV<Repair[]>('repairs', []);
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Forcer le rechargement des véhicules quand le composant se monte
+  useEffect(() => {
+    refreshVehicles();
+  }, [customer.id, refreshVehicles]);
 
   // Filtrer les données du client
   const customerVehicles = vehicles.filter(vehicle => vehicle.customerId === customer.id);
@@ -45,6 +50,13 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
     const vehicle = vehicles.find(v => v.id === repair.vehicleId);
     return vehicle?.customerId === customer.id;
   });
+
+  // Debug: Afficher les véhicules du client dans la console
+  useEffect(() => {
+    console.log('Customer vehicles for', customer.firstName, customer.lastName, ':', customerVehicles);
+    console.log('All vehicles:', vehicles);
+    console.log('Customer ID:', customer.id);
+  }, [customerVehicles, vehicles, customer]);
 
   // Calculer les statistiques
   const totalInvoices = customerInvoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0);
@@ -263,50 +275,64 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
         </TabsContent>
 
         <TabsContent value="vehicles">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {customerVehicles.map((vehicle) => (
-              <Card key={vehicle.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    <Car className="w-6 h-6 text-primary" />
-                    {vehicle.brand} {vehicle.model}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Année:</span>
-                      <div className="font-medium">{vehicle.year}</div>
+          <div className="space-y-4">
+            {/* Debug info */}
+            <div className="bg-muted/50 p-4 rounded-lg text-sm">
+              <p><strong>Debug:</strong> Client ID: {customer.id}</p>
+              <p><strong>Total véhicules:</strong> {vehicles.length}</p>
+              <p><strong>Véhicules du client:</strong> {customerVehicles.length}</p>
+              <p><strong>IDs des véhicules du client:</strong> {customerVehicles.map(v => v.id).join(', ')}</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {customerVehicles.map((vehicle) => (
+                <Card key={vehicle.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3">
+                      <Car className="w-6 h-6 text-primary" />
+                      {vehicle.brand} {vehicle.model}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Année:</span>
+                        <div className="font-medium">{vehicle.year}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Immatriculation:</span>
+                        <div className="font-medium">{vehicle.licensePlate}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">VIN:</span>
+                        <div className="font-medium text-xs">{vehicle.vin}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Couleur:</span>
+                        <div className="font-medium">{vehicle.color}</div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-muted-foreground">Immatriculation:</span>
-                      <div className="font-medium">{vehicle.licensePlate}</div>
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <Badge variant="outline">
+                        {customerRepairs.filter(r => r.vehicleId === vehicle.id).length} réparation(s)
+                      </Badge>
+                      <Button size="sm" variant="outline">
+                        Voir détails
+                      </Button>
                     </div>
-                    <div>
-                      <span className="text-muted-foreground">VIN:</span>
-                      <div className="font-medium text-xs">{vehicle.vin}</div>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Couleur:</span>
-                      <div className="font-medium">{vehicle.color}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <Badge variant="outline">
-                      {customerRepairs.filter(r => r.vehicleId === vehicle.id).length} réparation(s)
-                    </Badge>
-                    <Button size="sm" variant="outline">
-                      Voir détails
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
             {customerVehicles.length === 0 && (
-              <div className="col-span-3 text-center py-12 text-muted-foreground">
+              <div className="text-center py-12 text-muted-foreground">
                 <Car className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <h3 className="text-lg font-medium mb-2">Aucun véhicule enregistré</h3>
                 <p>Ce client n'a pas encore de véhicule dans le système.</p>
+                <div className="mt-4 text-sm bg-muted/50 p-4 rounded-lg">
+                  <p><strong>Debug:</strong> {vehicles.length} véhicules total, 0 pour ce client (ID: {customer.id})</p>
+                </div>
               </div>
             )}
           </div>

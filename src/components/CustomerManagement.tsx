@@ -27,9 +27,10 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     updateCustomer, 
     deleteCustomer, 
     searchCustomers,
-    getCustomerWithVehicles 
+    getCustomerWithVehicles,
+    refreshCustomers
   } = useCustomers();
-  const { vehicles } = useVehicles();
+  const { vehicles, refreshVehicles } = useVehicles();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
   const [isEditCustomerOpen, setIsEditCustomerOpen] = useState(false);
@@ -37,6 +38,12 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { hasPermission } = useAuth();
+
+  // Rafraîchir les données au chargement du composant
+  useEffect(() => {
+    refreshCustomers();
+    refreshVehicles();
+  }, [refreshCustomers, refreshVehicles]);
 
   // Formulaire client
   const [customerForm, setCustomerForm] = useState({
@@ -145,7 +152,9 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   );
 
   const getCustomerVehicles = (customerId: string) => {
-    return vehicles.filter(vehicle => vehicle.customerId === customerId);
+    const vehicleCount = vehicles.filter(vehicle => vehicle.customerId === customerId);
+    console.log(`Client ${customerId} a ${vehicleCount.length} véhicule(s):`, vehicleCount);
+    return vehicleCount;
   };
 
   const handleViewCustomer = (customer: Customer) => {

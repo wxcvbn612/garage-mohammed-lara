@@ -23,7 +23,6 @@ export function useDatabaseMigration() {
     try {
       setIsMigrating(true);
 
-      // Force re-migration pour corriger les données
       console.log('Début de la migration des données...');
 
       // Migration des clients
@@ -205,6 +204,7 @@ export function useDatabaseMigration() {
       for (const customerData of testCustomers) {
         const customer = await customerRepo.save(customerData);
         createdCustomers.push(customer);
+        console.log(`Client créé: ${customer.firstName} ${customer.lastName} avec ID: ${customer.id}`);
       }
 
       // Véhicules de test
@@ -263,6 +263,7 @@ export function useDatabaseMigration() {
       for (const vehicleData of testVehicles) {
         const vehicle = await vehicleRepo.save(vehicleData);
         createdVehicles.push(vehicle);
+        console.log(`Véhicule créé: ${vehicle.brand} ${vehicle.model} pour client ${vehicle.customerId}`);
       }
 
       // Réparations de test
@@ -328,9 +329,16 @@ export function useDatabaseMigration() {
   };
 
   useEffect(() => {
-    // Démarrer la migration automatiquement
-    migrateData();
-  }, []);
+    // Démarrer la migration automatiquement au premier chargement
+    const checkAndMigrate = async () => {
+      const migrationComplete = await window.spark.kv.get('database_migration_v3_complete');
+      if (!migrationComplete) {
+        await migrateData();
+      }
+    };
+    
+    checkAndMigrate();
+  }, []); // Pas de dépendances pour éviter les boucles
 
   return {
     isMigrating,
