@@ -340,6 +340,5 @@ export class EntityManager {
     }
   }
 }
-}
 
 export default EntityManager.getInstance();
