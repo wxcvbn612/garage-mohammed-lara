@@ -279,9 +279,9 @@ export function useVehicles() {
       throw err;
     } finally {
       setLoading(false);
-    }
-  };
-
+    error,
+    createVehicle,
+    updateVehicle,
   return {
     vehicles: Array.isArray(vehicles) ? vehicles : [],
     loading,
