@@ -88,28 +88,37 @@ export function useAuth() {
   });
 
   const [users, setUsers] = useKV<User[]>('users', []);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Initialize auth state and default admin user
   useEffect(() => {
-    // Reset loading state on mount to prevent stuck loading states
-    setAuthState(current => ({ ...current, loading: false }));
+    if (!isInitialized) {
+      // Ensure clean initial state
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false
+      });
 
-    // Initialize default admin user if no users exist
-    if (users.length === 0) {
-      const defaultAdmin: User = {
-        id: 'admin-1',
-        username: 'admin',
-        email: 'admin@garage-mohammed.com',
-        firstName: 'Mohammed',
-        lastName: 'Larache',
-        role: 'admin',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        permissions: DEFAULT_PERMISSIONS.admin
-      };
-      setUsers([defaultAdmin]);
+      // Initialize default admin user if no users exist
+      if (users.length === 0) {
+        const defaultAdmin: User = {
+          id: 'admin-1',
+          username: 'admin',
+          email: 'admin@garage-mohammed.com',
+          firstName: 'Mohammed',
+          lastName: 'Larache',
+          role: 'admin',
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          permissions: DEFAULT_PERMISSIONS.admin
+        };
+        setUsers([defaultAdmin]);
+      }
+      
+      setIsInitialized(true);
     }
-  }, [users.length, setUsers, setAuthState]);
+  }, [isInitialized, users.length, setUsers, setAuthState]);
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {

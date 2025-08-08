@@ -14,20 +14,36 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim() && password.trim() && !loading) {
+      setHasError(false);
       try {
         const success = await onLogin(username.trim(), password);
         if (!success) {
-          // Le hook useAuth gère déjà l'état de chargement et les erreurs
-          console.log('Échec de la connexion');
+          setHasError(true);
+          // Clear password on failed login
+          setPassword('');
         }
       } catch (error) {
         console.error('Erreur lors de la connexion:', error);
+        setHasError(true);
+        setPassword('');
       }
     }
+  };
+
+  // Reset error when user starts typing
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+    if (hasError) setHasError(false);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    if (hasError) setHasError(false);
   };
 
   return (
@@ -61,7 +77,7 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
                     type="text"
                     placeholder="Votre nom d'utilisateur"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => handleUsernameChange(e.target.value)}
                     className="pl-10"
                     required
                   />
@@ -76,7 +92,7 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Votre mot de passe"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
                     className="pr-10"
                     required
                   />
@@ -111,11 +127,16 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
               </p>
               <div className="text-xs text-muted-foreground space-y-1">
                 <p><strong>Admin:</strong> admin / admin123</p>
-                <p><strong>Autres rôles:</strong> username / password</p>
+                <p><strong>Autres utilisateurs:</strong> utilisateur / password</p>
               </div>
+              {hasError && !loading && (
+                <div className="mt-2 text-xs text-destructive">
+                  ❌ Informations de connexion incorrectes
+                </div>
+              )}
               {loading && (
                 <div className="mt-2 text-xs text-primary">
-                  Connexion en cours...
+                  ⏳ Connexion en cours...
                 </div>
               )}
             </div>
