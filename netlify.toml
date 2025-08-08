@@ -2,25 +2,22 @@
   publish = "dist"
   command = "npm run build"
 
-[build.environment]
-  NODE_VERSION = "18"
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["src/**/*.ts", "src/**/*.tsx"]
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+[build.environment]
+  NODE_VERSION = "18"
+
 [[headers]]
-  for = "/assets/*"
+  for = "/api/*"
   [headers.values]
-    Cache-Control = "max-age=31536000"
-    
-[[headers]]
-  for = "*.js"
-  [headers.values]
-    Cache-Control = "max-age=31536000"
-    
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "max-age=31536000"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-User-Id"

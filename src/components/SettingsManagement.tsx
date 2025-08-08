@@ -16,10 +16,12 @@ import {
   RotateCcw,
   CheckCircle,
   AlertCircle,
-  Database
+  Database,
+  Cloud
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import DatabaseManagement from './DatabaseManagement';
+import CloudSyncSettings from './CloudSyncSettings';
 
 interface AppSettings {
   currency: {
@@ -190,7 +192,7 @@ export default function SettingsManagement() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
             Général
@@ -198,6 +200,10 @@ export default function SettingsManagement() {
           <TabsTrigger value="business" className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
             Entreprise
+          </TabsTrigger>
+          <TabsTrigger value="cloud" className="flex items-center gap-2">
+            <Cloud className="w-4 h-4" />
+            Cloud
           </TabsTrigger>
           <TabsTrigger value="database" className="flex items-center gap-2">
             <Database className="w-4 h-4" />
@@ -427,6 +433,10 @@ export default function SettingsManagement() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="cloud" className="space-y-6">
+          <CloudSyncSettings />
         </TabsContent>
 
         <TabsContent value="database" className="space-y-6">

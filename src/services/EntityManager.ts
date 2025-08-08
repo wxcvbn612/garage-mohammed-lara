@@ -242,6 +242,104 @@ export class EntityManager {
       currentPage: page
     };
   }
+
+  // Convenience methods for CloudSyncService
+  async getAllCustomers() {
+    return this.findAll('customers');
+  }
+
+  async getAllVehicles() {
+    return this.findAll('vehicles');
+  }
+
+  async getAllRepairs() {
+    return this.findAll('repairs');
+  }
+
+  async getAllInvoices() {
+    return this.findAll('invoices');
+  }
+
+  async getAllUsers() {
+    return this.findAll('users');
+  }
+
+  async getAllMechanics() {
+    return this.findAll('mechanics');
+  }
+
+  async getAllAppointments() {
+    return this.findAll('appointments');
+  }
+
+  async getAllStockItems() {
+    return this.findAll('stock');
+  }
+
+  async saveCustomer(customer: any) {
+    if (customer.id) {
+      return this.update('customers', customer.id, customer);
+    } else {
+      return this.persist('customers', customer);
+    }
+  }
+
+  async saveVehicle(vehicle: any) {
+    if (vehicle.id) {
+      return this.update('vehicles', vehicle.id, vehicle);
+    } else {
+      return this.persist('vehicles', vehicle);
+    }
+  }
+
+  async saveRepair(repair: any) {
+    if (repair.id) {
+      return this.update('repairs', repair.id, repair);
+    } else {
+      return this.persist('repairs', repair);
+    }
+  }
+
+  async saveInvoice(invoice: any) {
+    if (invoice.id) {
+      return this.update('invoices', invoice.id, invoice);
+    } else {
+      return this.persist('invoices', invoice);
+    }
+  }
+
+  async saveUser(user: any) {
+    if (user.id) {
+      return this.update('users', user.id, user);
+    } else {
+      return this.persist('users', user);
+    }
+  }
+
+  async saveMechanic(mechanic: any) {
+    if (mechanic.id) {
+      return this.update('mechanics', mechanic.id, mechanic);
+    } else {
+      return this.persist('mechanics', mechanic);
+    }
+  }
+
+  async saveAppointment(appointment: any) {
+    if (appointment.id) {
+      return this.update('appointments', appointment.id, appointment);
+    } else {
+      return this.persist('appointments', appointment);
+    }
+  }
+
+  async saveStockItem(stockItem: any) {
+    if (stockItem.id) {
+      return this.update('stock', stockItem.id, stockItem);
+    } else {
+      return this.persist('stock', stockItem);
+    }
+  }
+}
 }
 
 export default EntityManager.getInstance();

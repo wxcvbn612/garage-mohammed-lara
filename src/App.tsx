@@ -36,9 +36,11 @@ import SettingsManagement from './components/SettingsManagement';
 import UserManagement from './components/UserManagement';
 import LoginForm from './components/LoginForm';
 import AuthDebugPanel from './components/AuthDebugPanel';
+import CloudSyncIndicator from './components/CloudSyncIndicator';
 import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 import { useDatabaseMigration } from './hooks/useDatabase';
+import { useCloudSyncInit } from './hooks/useCloudSyncInit';
 import './utils/databaseTester'; // Import testeur pour développement
 
 interface DashboardStats {
@@ -55,6 +57,10 @@ function App() {
   const settings = useAppSettings();
   const { authState, login, logout, hasPermission, resetAuthState } = useAuth();
   const { isInitializing, migrationComplete } = useDatabaseMigration();
+  
+  // Initialize cloud sync
+  useCloudSyncInit();
+  
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -146,6 +152,7 @@ function App() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <CloudSyncIndicator />
             <NotificationCenter />
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="flex items-center gap-2">

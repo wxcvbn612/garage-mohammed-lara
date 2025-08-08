@@ -4,6 +4,7 @@ import { Customer, Vehicle, Repair, Part, Appointment, Invoice, Mechanic, Suppli
 // Export des nouveaux services de base de données
 export { default as EntityManager } from './EntityManager';
 export { default as DatabaseService } from './DatabaseService';
+export { CloudSyncService } from './CloudSyncService';
 export { 
   BaseRepository, 
   CustomerRepository, 
