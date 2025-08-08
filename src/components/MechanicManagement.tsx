@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from '../hooks/useKV';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ import {
 import { useState } from 'react';
 import { Mechanic } from '@/entities';
 import { toast } from 'sonner';
-import { useAppGear } from '../hooks/useAppSettings';
+import { useAppSettings } from '../hooks/useAppSettings';
 
 export default function MechanicManagement() {
   const settings = useAppSettings();

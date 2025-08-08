@@ -20,7 +20,7 @@ import {
   Info
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import { useDatabaseStats } from '@/hooks/useDatabase';
+import { useDatabaseStats } from '../hooks/useDatabase';
 import { db, DatabaseService } from '@/lib/database';
 
 export default function DatabaseManagement() {

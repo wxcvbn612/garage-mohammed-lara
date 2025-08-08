@@ -21,9 +21,9 @@ import {
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import DatabaseManagement from './DatabaseManagement';
-import CloudSyncGear from './CloudSyncSettings';
+import CloudSyncSettings from './CloudSyncSettings';
 
-interface AppGear {
+interface AppSettings {
   currency: {
     code: string;
     symbol: string;
@@ -88,7 +88,7 @@ export default function SettingsManagement() {
   const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const updateGear = (section: keyof AppGear, field: string, value: any) => {
+  const updateSettings = (section: keyof AppSettings, field: string, value: any) => {
     setSettings((current) => ({
       ...current,
       [section]: {
@@ -110,7 +110,7 @@ export default function SettingsManagement() {
     }
   };
 
-  const saveGear = async () => {
+  const saveSettings = async () => {
     setIsSaving(true);
     try {
       // Les changements sont déjà dans setGear grâce à useKV
@@ -124,7 +124,7 @@ export default function SettingsManagement() {
     }
   };
 
-  const resetGear = () => {
+  const resetSettings = () => {
     setSettings({
       currency: {
         code: 'MAD',
@@ -436,7 +436,7 @@ export default function SettingsManagement() {
         </TabsContent>
 
         <TabsContent value="cloud" className="space-y-6">
-          <CloudSyncGear />
+          <CloudSyncSettings />
         </TabsContent>
 
         <TabsContent value="database" className="space-y-6">

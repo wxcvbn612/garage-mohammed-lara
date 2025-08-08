@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from '../hooks/useKV';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Customer } from '@/entities';

@@ -278,13 +278,13 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
               placeholder="Rechercher un client..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyPress={(e) => e.key === 'Enter' && handleMagnifyingGlass()}
               className="pl-10 w-64"
             />
             <Button 
               size="sm" 
               variant="ghost" 
-              onClick={handleSearch}
+              onClick={handleMagnifyingGlass}
               className="absolute right-1 top-1/2 transform -translate-y-1/2"
             >
               <MagnifyingGlass className="w-4 h-4" />

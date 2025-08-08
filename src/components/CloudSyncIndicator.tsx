@@ -8,7 +8,7 @@ import {
   CloudX, 
   ArrowsClockwise 
 } from '@phosphor-icons/react';
-import { useCloudSync } from '@/hooks/useCloudSync';
+import { useCloudSync } from '../hooks/useCloudSync';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 

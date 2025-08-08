@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from '../hooks/useKV';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,7 +17,7 @@ import {
 } from '@phosphor-icons/react';
 import { useState, useMemo } from 'react';
 import { Customer, Vehicle, Repair, Invoice, Mechanic } from '@/entities';
-import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface ReportData {
   period: string;

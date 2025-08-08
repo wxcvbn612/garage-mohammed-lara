@@ -99,7 +99,10 @@ export function useCustomers() {
       setLoading(true);
       const newCustomer = await DatabaseService.createCustomer(customerData);
       const customerWithStringId = { ...newCustomer, id: newCustomer.id?.toString() || Date.now().toString() };
-      setCustomers(prev => [...prev, customerWithStringId]);
+      setCustomers(prev => {
+        const currentCustomers = Array.isArray(prev) ? prev : [];
+        return [...currentCustomers, customerWithStringId];
+      });
       return customerWithStringId;
     } catch (err) {
       setError('Erreur lors de la création du client');
@@ -116,7 +119,10 @@ export function useCustomers() {
       await DatabaseService.updateCustomer(numericId, customerData);
       const updatedCustomer = await DatabaseService.getCustomer(numericId);
       if (updatedCustomer) {
-        setCustomers(prev => prev.map(c => c.id === id ? { ...updatedCustomer, id } : c));
+        setCustomers(prev => {
+          const currentCustomers = Array.isArray(prev) ? prev : [];
+          return currentCustomers.map(c => c.id === id ? { ...updatedCustomer, id } : c);
+        });
         return { ...updatedCustomer, id };
       }
     } catch (err) {
@@ -132,7 +138,10 @@ export function useCustomers() {
       setLoading(true);
       const numericId = parseInt(id);
       await DatabaseService.deleteCustomer(numericId);
-      setCustomers(prev => prev.filter(c => c.id !== id));
+      setCustomers(prev => {
+        const currentCustomers = Array.isArray(prev) ? prev : [];
+        return currentCustomers.filter(c => c.id !== id);
+      });
     } catch (err) {
       setError('Erreur lors de la suppression du client');
       throw err;
@@ -142,10 +151,11 @@ export function useCustomers() {
   };
 
   const searchCustomers = async (searchTerm: string) => {
+    const customerArray = Array.isArray(customers) ? customers : [];
     if (!searchTerm.trim()) {
-      return customers;
+      return customerArray;
     }
-    return customers.filter(customer => 
+    return customerArray.filter(customer => 
       customer.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -216,7 +226,10 @@ export function useVehicles() {
         id: newVehicle.id?.toString() || Date.now().toString(),
         customerId: newVehicle.customerId?.toString() || vehicleData.customerId
       };
-      setVehicles(prev => [...prev, vehicleWithStringId]);
+      setVehicles(prev => {
+        const currentVehicles = Array.isArray(prev) ? prev : [];
+        return [...currentVehicles, vehicleWithStringId];
+      });
       return vehicleWithStringId;
     } catch (err) {
       setError('Erreur lors de la création du véhicule');
@@ -238,7 +251,10 @@ export function useVehicles() {
           id, 
           customerId: updatedVehicle.customerId?.toString() || vehicleData.customerId 
         };
-        setVehicles(prev => prev.map(v => v.id === id ? vehicleWithStringId : v));
+        setVehicles(prev => {
+          const currentVehicles = Array.isArray(prev) ? prev : [];
+          return currentVehicles.map(v => v.id === id ? vehicleWithStringId : v);
+        });
         return vehicleWithStringId;
       }
     } catch (err) {
@@ -254,7 +270,10 @@ export function useVehicles() {
       setLoading(true);
       const numericId = parseInt(id);
       await DatabaseService.deleteVehicle(numericId);
-      setVehicles(prev => prev.filter(v => v.id !== id));
+      setVehicles(prev => {
+        const currentVehicles = Array.isArray(prev) ? prev : [];
+        return currentVehicles.filter(v => v.id !== id);
+      });
     } catch (err) {
       setError('Erreur lors de la suppression du véhicule');
       throw err;

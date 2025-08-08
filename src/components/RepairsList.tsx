@@ -23,7 +23,7 @@ import {
 import { Repair, Customer, Vehicle, RepairStatus, RepairPriority } from '@/entities';
 import { repairService, customerService, vehicleService } from '@/services';
 import { toast } from 'sonner';
-import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 export default function RepairsList() {
   const [repairs, setRepairs] = useState<Repair[]>([]);

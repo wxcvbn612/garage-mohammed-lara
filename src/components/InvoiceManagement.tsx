@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from '../hooks/useKV';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +21,7 @@ import {
   WarningCircle
 } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { useAppGear, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
+import { useAppSettings, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
 
 interface Invoice {
   id: string;

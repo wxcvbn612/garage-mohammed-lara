@@ -1,4 +1,4 @@
-import { useKV } from './hooks/useDatabase';
+import { useKV } from './hooks/useKV';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +41,6 @@ import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 import { useDatabaseMigration } from './hooks/useDatabase';
 import { useCloudSyncInit } from './hooks/useCloudSyncInit';
-import { useKV } from './hooks/useKV';
 import './utils/databaseTester'; // Import testeur pour développement
 
 interface DashboardStats {
