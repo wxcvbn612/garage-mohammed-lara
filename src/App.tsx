@@ -35,6 +35,7 @@ import NotificationCenter from './components/NotificationCenter';
 import SettingsManagement from './components/SettingsManagement';
 import UserManagement from './components/UserManagement';
 import LoginForm from './components/LoginForm';
+import AuthDebugPanel from './components/AuthDebugPanel';
 import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 
@@ -50,7 +51,7 @@ interface DashboardStats {
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const settings = useAppSettings();
-  const { authState, login, logout, hasPermission } = useAuth();
+  const { authState, login, logout, hasPermission, resetAuthState } = useAuth();
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -62,7 +63,12 @@ function App() {
 
   // Show login form if not authenticated
   if (!authState.isAuthenticated) {
-    return <LoginForm onLogin={login} loading={authState.loading} />;
+    return (
+      <div>
+        <LoginForm onLogin={login} loading={authState.loading} />
+        <AuthDebugPanel />
+      </div>
+    );
   }
 
   const navigation = [
@@ -173,6 +179,9 @@ function App() {
       
       {/* Toaster pour les notifications */}
       <Toaster position="top-right" richColors />
+      
+      {/* Debug panel - remove in production */}
+      <AuthDebugPanel />
     </div>
   );
 }

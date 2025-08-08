@@ -91,16 +91,18 @@ export function useAuth() {
   const [users, setUsers] = useKV<User[]>('users', []);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Debug function to reset auth state if needed
+  const resetAuthState = () => {
+    setAuthState({
+      isAuthenticated: false,
+      user: null,
+      loading: false
+    });
+  };
+
   // Initialize auth state and default admin user
   useEffect(() => {
     if (!isInitialized) {
-      // Ensure clean initial state
-      setAuthState({
-        isAuthenticated: false,
-        user: null,
-        loading: false
-      });
-
       // Initialize default admin user if no users exist
       if (users.length === 0) {
         const defaultAdmin: User = {
@@ -120,7 +122,7 @@ export function useAuth() {
       
       setIsInitialized(true);
     }
-  }, [isInitialized, users.length, setUsers, setAuthState]);
+  }, [isInitialized, users.length, setUsers]);
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
@@ -136,7 +138,8 @@ export function useAuth() {
       if (user && user.password === password) {
         const updatedUser = {
           ...user,
-          lastLogin: new Date().toISOString()
+          lastLogin: new Date().toISOString(),
+          permissions: user.permissions || DEFAULT_PERMISSIONS[user.role] || []
         };
 
         // Update user's last login
@@ -186,7 +189,11 @@ export function useAuth() {
   };
 
   const hasPermission = (permission: string): boolean => {
-    return authState.user?.permissions.includes(permission) || false;
+    if (!authState.user) {
+      return false;
+    }
+    
+    return authState.user.permissions?.includes(permission) || false;
   };
 
   const createUser = (userData: Omit<User, 'id' | 'createdAt' | 'permissions'> & { password: string }): User => {
@@ -249,6 +256,7 @@ export function useAuth() {
     createUser,
     updateUser,
     deleteUser,
-    getUsersByRole
+    getUsersByRole,
+    resetAuthState
   };
 }
