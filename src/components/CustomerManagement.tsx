@@ -111,11 +111,6 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       toast.success('Client ajouté avec succès');
     } catch (error) {
       console.error('Erreur lors de l\'ajout du client:', error);
-      toast.error('Erreur lors de l\'ajout du client');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
       toast.error(`Erreur lors de l'ajout du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     } finally {
       setIsSubmitting(false);
