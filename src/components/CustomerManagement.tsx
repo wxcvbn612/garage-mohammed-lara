@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, User, Phone, Mail, MapPin, PencilSimple, Trash, Search, Eye, ArrowLeft, Shield } from '@phosphor-icons/react';
+import { Plus, User, Phone, Envelope, MapPin, PencilSimple, Trash, MagnifyingGlass, Eye, ArrowLeft, Shield } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
 import { useAuth } from '../hooks/useAuth';
@@ -253,7 +253,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
         <h2 className="text-2xl font-bold text-foreground">Gestion des Clients</h2>
         <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Rechercher un client..."
               value={searchTerm}
@@ -267,7 +267,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
               onClick={handleSearch}
               className="absolute right-1 top-1/2 transform -translate-y-1/2"
             >
-              <Search className="w-4 h-4" />
+              <MagnifyingGlass className="w-4 h-4" />
             </Button>
           </div>
           {canCreateCustomer && (
@@ -317,7 +317,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
             <CardContent className="space-y-3">
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mail className="w-4 h-4" />
+                  <Envelope className="w-4 h-4" />
                   {customer.email}
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">

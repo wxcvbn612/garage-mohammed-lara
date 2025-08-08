@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
+import '../lib/spark-mocks'; // Ensure spark is available
 
 export default function AuthDebugPanel() {
   const { authState, users, resetAuthState } = useAuth();
@@ -17,8 +18,8 @@ export default function AuthDebugPanel() {
   const handleClearUsers = async () => {
     if (confirm('Êtes-vous sûr de vouloir supprimer tous les utilisateurs ?')) {
       // This would require exposing a clearUsers function from useAuth
-      await spark.kv.delete('users');
-      await spark.kv.delete('auth-state');
+      await window.spark.kv.delete('users');
+      await window.spark.kv.delete('auth-state');
       window.location.reload();
     }
   };

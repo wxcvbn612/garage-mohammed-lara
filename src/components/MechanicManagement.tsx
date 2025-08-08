@@ -37,7 +37,7 @@ export default function MechanicManagement() {
     lastName: '',
     email: '',
     phone: '',
-    specializations: [],
+    specialties: [],
     hourlyRate: 45,
     isActive: true,
     hireDate: new Date(),
@@ -65,14 +65,14 @@ export default function MechanicManagement() {
     
     return fullName.includes(searchLower) ||
            mechanic.email.toLowerCase().includes(searchLower) ||
-           mechanic.specializations.some(spec => spec.toLowerCase().includes(searchLower));
+           mechanic.specialties.some(spec => spec.toLowerCase().includes(searchLower));
   });
 
   const handleAddSpecialization = () => {
-    if (newSpecialization.trim() && !newMechanic.specializations?.includes(newSpecialization.trim())) {
+    if (newSpecialization.trim() && !newMechanic.specialties?.includes(newSpecialization.trim())) {
       setNewMechanic(prev => ({
         ...prev,
-        specializations: [...(prev.specializations || []), newSpecialization.trim()]
+        specialties: [...(prev.specialties || []), newSpecialization.trim()]
       }));
       setNewSpecialization('');
     }
@@ -81,7 +81,7 @@ export default function MechanicManagement() {
   const handleRemoveSpecialization = (spec: string) => {
     setNewMechanic(prev => ({
       ...prev,
-      specializations: prev.specializations?.filter(s => s !== spec) || []
+      specialties: prev.specialties?.filter(s => s !== spec) || []
     }));
   };
 
@@ -101,7 +101,7 @@ export default function MechanicManagement() {
     const mechanic: Mechanic = {
       id: Date.now().toString(),
       ...newMechanic as Omit<Mechanic, 'id'>,
-      specializations: newMechanic.specializations || [],
+      specialties: newMechanic.specialties || [],
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -156,7 +156,7 @@ export default function MechanicManagement() {
       lastName: '',
       email: '',
       phone: '',
-      specializations: [],
+      specialties: [],
       hourlyRate: 45,
       isActive: true,
       hireDate: new Date(),
@@ -270,15 +270,15 @@ export default function MechanicManagement() {
                     <Button
                       key={spec}
                       type="button"
-                      variant={newMechanic.specializations?.includes(spec) ? "default" : "outline"}
+                      variant={newMechanic.specialties?.includes(spec) ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        if (newMechanic.specializations?.includes(spec)) {
+                        if (newMechanic.specialties?.includes(spec)) {
                           handleRemoveSpecialization(spec);
                         } else {
                           setNewMechanic(prev => ({
                             ...prev,
-                            specializations: [...(prev.specializations || []), spec]
+                            specialties: [...(prev.specialties || []), spec]
                           }));
                         }
                       }}
@@ -302,9 +302,9 @@ export default function MechanicManagement() {
                 </div>
 
                 {/* Spécialisations sélectionnées */}
-                {newMechanic.specializations && newMechanic.specializations.length > 0 && (
+                {newMechanic.specialties && newMechanic.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {newMechanic.specializations.map(spec => (
+                    {newMechanic.specialties.map(spec => (
                       <Badge 
                         key={spec} 
                         className={`${getSpecializationColor(spec)} cursor-pointer`}
@@ -404,7 +404,7 @@ export default function MechanicManagement() {
               <div>
                 <p className="text-sm text-muted-foreground">Spécialisations</p>
                 <p className="text-2xl font-bold">
-                  {new Set(mechanics.flatMap(m => m.specializations)).size}
+                  {new Set(mechanics.flatMap(m => m.specialties)).size}
                 </p>
               </div>
               <Wrench className="w-8 h-8 text-primary" />
@@ -486,14 +486,14 @@ export default function MechanicManagement() {
                 </div>
               </div>
 
-              {mechanic.specializations.length > 0 && (
+              {mechanic.specialties.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Wrench className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm font-medium">Spécialisations:</span>
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    {mechanic.specializations.map(spec => (
+                    {mechanic.specialties.map(spec => (
                       <Badge 
                         key={spec} 
                         variant="outline" 

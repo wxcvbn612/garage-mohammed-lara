@@ -10,15 +10,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { 
   Plus, 
-  Search, 
-  Euro, 
+  MagnifyingGlass, 
+  CurrencyEur, 
   FileText,
-  Send,
+  PaperPlaneTilt,
   Eye,
   Download,
   CheckCircle,
   Clock,
-  AlertCircle
+  WarningCircle
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useAppSettings, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
@@ -81,10 +81,10 @@ const InvoiceManagement = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'draft': return <FileText className="w-4 h-4" />;
-      case 'sent': return <Send className="w-4 h-4" />;
+      case 'sent': return <PaperPlaneTilt className="w-4 h-4" />;
       case 'paid': return <CheckCircle className="w-4 h-4" />;
-      case 'overdue': return <AlertCircle className="w-4 h-4" />;
-      case 'cancelled': return <AlertCircle className="w-4 h-4" />;
+      case 'overdue': return <WarningCircle className="w-4 h-4" />;
+      case 'cancelled': return <WarningCircle className="w-4 h-4" />;
       default: return <Clock className="w-4 h-4" />;
     }
   };
@@ -154,7 +154,7 @@ const InvoiceManagement = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Chiffre d'Affaires
             </CardTitle>
-            <Euro className="w-5 h-5 text-accent" />
+            <CurrencyEur className="w-5 h-5 text-accent" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-accent">{formatCurrency(totalRevenue, settings.currency)}</div>
@@ -204,7 +204,7 @@ const InvoiceManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Rechercher par numéro, client ou véhicule..."
                   value={searchTerm}

@@ -10,19 +10,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { 
   Car, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   PencilSimple,
   Trash,
-  Fuel,
+  GasPump,
   Calendar,
   Info,
   Camera,
   Eye
 } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
-import { Vehicle, Customer, FuelType, VehiclePhoto } from '@/entities';
+import { Vehicle, Customer, VehiclePhoto } from '@/entities';
 import { toast } from 'sonner';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
+import '../lib/spark-mocks'; // Ensure spark is available
 import VehicleDetailView from './VehicleDetailView';
 
 export default function VehicleManagement() {
@@ -41,7 +42,7 @@ export default function VehicleManagement() {
   useEffect(() => {
     const refreshPhotos = async () => {
       try {
-        const currentPhotos = await spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
+        const currentPhotos = await window.spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
         setPhotos(currentPhotos);
       } catch (error) {
         console.error('Erreur lors du rafraîchissement des photos:', error);
@@ -52,7 +53,7 @@ export default function VehicleManagement() {
     refreshPhotos();
   }, [photoRefreshKey, setPhotos]);
 
-  const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
+  const [newVehicle, setNewVehicle] = useState<Partial<Vehicle & { fuelType: string }>>({
     customerId: '',
     brand: '',
     model: '',
@@ -342,7 +343,7 @@ export default function VehicleManagement() {
                 <Label htmlFor="fuelType">Type de carburant</Label>
                 <Select 
                   value={newVehicle.fuelType} 
-                  onValueChange={(value) => setNewVehicle(prev => ({ ...prev, fuelType: value as keyof typeof FuelType }))}
+                  onValueChange={(value) => setNewVehicle(prev => ({ ...prev, fuelType: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -416,7 +417,7 @@ export default function VehicleManagement() {
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Rechercher par marque, modèle, plaque..."
                   value={searchTerm}

@@ -9,13 +9,13 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Settings, 
+  Gear, 
   Globe, 
-  DollarSign, 
-  Save, 
-  RotateCcw,
+  CurrencyDollar, 
+  FloppyDisk, 
+  ArrowCounterClockwise,
   CheckCircle,
-  AlertCircle,
+  WarningCircle,
   Database,
   Cloud
 } from '@phosphor-icons/react';
@@ -153,7 +153,7 @@ export default function SettingsManagement() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg">
-            <Settings className="w-6 h-6 text-primary" />
+            <Gear className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-foreground">Paramètres</h2>
@@ -164,7 +164,7 @@ export default function SettingsManagement() {
         <div className="flex items-center gap-2">
           {hasChanges && (
             <Badge variant="secondary" className="flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" />
+              <WarningCircle className="w-3 h-3" />
               Modifications non sauvées
             </Badge>
           )}
@@ -173,7 +173,7 @@ export default function SettingsManagement() {
             onClick={resetSettings}
             className="flex items-center gap-2"
           >
-            <RotateCcw className="w-4 h-4" />
+            <ArrowCounterClockwise className="w-4 h-4" />
             Réinitialiser
           </Button>
           <Button
@@ -184,7 +184,7 @@ export default function SettingsManagement() {
             {isSaving ? (
               <div className="w-4 h-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
             ) : (
-              <Save className="w-4 h-4" />
+              <FloppyDisk className="w-4 h-4" />
             )}
             Sauvegarder
           </Button>
@@ -194,7 +194,7 @@ export default function SettingsManagement() {
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general" className="flex items-center gap-2">
-            <Settings className="w-4 h-4" />
+            <Gear className="w-4 h-4" />
             Général
           </TabsTrigger>
           <TabsTrigger value="business" className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export default function SettingsManagement() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-primary" />
+                  <CurrencyDollar className="w-5 h-5 text-primary" />
                   Devise
                 </CardTitle>
               </CardHeader>
@@ -266,7 +266,7 @@ export default function SettingsManagement() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Settings className="w-5 h-5 text-primary" />
+              <Gear className="w-5 h-5 text-primary" />
               Informations du garage
             </CardTitle>
           </CardHeader>

@@ -5,6 +5,7 @@
  */
 
 import { BaseEntity } from './EntityManager';
+import '../lib/spark-mocks'; // Ensure spark is available
 
 export interface DatabaseConstraint {
   type: 'unique' | 'foreign_key' | 'check';
@@ -766,6 +767,30 @@ export class DatabaseService {
       if (this.schemas.has(tableName)) {
         await window.spark.kv.set(`entities_${tableName}`, entities);
       }
+    }
+  }
+
+  /**
+   * Generic get method for CloudSync compatibility
+   */
+  async get(tableName: string, id: string): Promise<any> {
+    return await window.spark.kv.get(`${tableName}_${id}`);
+  }
+
+  /**
+   * Generic put method for CloudSync compatibility
+   */
+  async put(tableName: string, data: any): Promise<void> {
+    await window.spark.kv.set(`${tableName}_${data.id}`, data);
+  }
+
+  /**
+   * Clear all data for CloudSync compatibility
+   */
+  async clear(): Promise<void> {
+    const keys = await window.spark.kv.keys();
+    for (const key of keys) {
+      await window.spark.kv.delete(key);
     }
   }
 }

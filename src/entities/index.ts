@@ -22,8 +22,9 @@ export interface Vehicle extends BaseEntity {
   model: string;
   year: number;
   licensePlate: string;
+  registrationNumber?: string; // Alias for licensePlate for compatibility
   vin?: string;
-  mileage: number;
+  mileage?: number;
   fuelType: 'essence' | 'diesel' | 'hybride' | 'electrique';
   color?: string;
   notes?: string;
@@ -47,12 +48,14 @@ export interface Repair extends BaseEntity {
   customerId: string;
   title: string;
   description: string;
-  status: 'en_attente' | 'en_cours' | 'termine' | 'annule';
+  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
   priority: 'basse' | 'normale' | 'haute' | 'urgente';
   estimatedCost: number;
   actualCost?: number;
+  cost: number; // alias for actualCost for compatibility
   estimatedDuration: number; // en heures
   actualDuration?: number;
+  laborHours: number; // alias for actualDuration for compatibility
   startDate?: Date;
   endDate?: Date;
   mechanicId?: string;
@@ -102,7 +105,7 @@ export interface Invoice extends BaseEntity {
   invoiceNumber: string;
   issueDate: Date;
   dueDate: Date;
-  status: 'brouillon' | 'envoyee' | 'payee' | 'en_retard' | 'annulee';
+  status: 'cancelled' | 'draft' | 'sent' | 'paid' | 'overdue';
   subtotal: number;
   taxRate: number;
   taxAmount: number;
@@ -127,7 +130,7 @@ export interface Mechanic extends BaseEntity {
   lastName: string;
   email: string;
   phone: string;
-  specializations: string[];
+  specialties: string[];
   hourlyRate: number;
   isActive: boolean;
   hireDate: Date;
@@ -159,10 +162,10 @@ export interface Payment extends BaseEntity {
  * Enums pour les différents statuts et types
  */
 export const RepairStatus = {
-  EN_ATTENTE: 'en_attente',
-  EN_COURS: 'en_cours',
-  TERMINE: 'termine',
-  ANNULE: 'annule'
+  PENDING: 'pending',
+  IN_PROGRESS: 'in-progress',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled'
 } as const;
 
 export const RepairPriority = {
@@ -188,11 +191,11 @@ export const AppointmentType = {
 } as const;
 
 export const InvoiceStatus = {
-  BROUILLON: 'brouillon',
-  ENVOYEE: 'envoyee',
-  PAYEE: 'payee',
-  EN_RETARD: 'en_retard',
-  ANNULEE: 'annulee'
+  DRAFT: 'draft',
+  SENT: 'sent',
+  PAID: 'paid',
+  OVERDUE: 'overdue',
+  CANCELLED: 'cancelled'
 } as const;
 
 export const PaymentMethod = {
@@ -208,3 +211,32 @@ export const FuelType = {
   HYBRIDE: 'hybride',
   ELECTRIQUE: 'electrique'
 } as const;
+
+export interface User extends BaseEntity {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'mechanic' | 'manager';
+  permissions: string[];
+  isActive: boolean;
+  lastLogin?: Date;
+}
+
+export interface AppSettings extends BaseEntity {
+  garage: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    taxRate: number;
+  };
+  currency: string;
+  dateFormat: string;
+  timeFormat: string;
+  notifications: {
+    lowStock: boolean;
+    appointmentReminders: boolean;
+    overduePrayments: boolean;
+  };
+}

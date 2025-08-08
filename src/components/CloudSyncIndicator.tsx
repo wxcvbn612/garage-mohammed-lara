@@ -6,7 +6,7 @@ import {
   Cloud, 
   CloudCheck, 
   CloudX, 
-  RefreshCw 
+  ArrowsClockwise 
 } from '@phosphor-icons/react';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { formatDistanceToNow } from 'date-fns';
@@ -26,7 +26,7 @@ export default function CloudSyncIndicator() {
 
   const getSyncIcon = () => {
     if (status.syncInProgress || isLoading) {
-      return <RefreshCw className="w-4 h-4 animate-spin" />;
+      return <ArrowsClockwise className="w-4 h-4 animate-spin" />;
     }
     if (status.error) {
       return <CloudX className="w-4 h-4" />;

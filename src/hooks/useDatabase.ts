@@ -114,3 +114,15 @@ export function useDatabaseStats() {
     refreshStats
   };
 }
+
+// Hook for managing customers
+export function useCustomers() {
+  const [customers] = useKV('customers', []);
+  return customers;
+}
+
+// Hook for managing vehicles  
+export function useVehicles() {
+  const [vehicles] = useKV('vehicles', []);
+  return vehicles;
+}

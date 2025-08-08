@@ -6,16 +6,16 @@ import {
   Wrench, 
   Calendar, 
   Package, 
-  Euro, 
-  TrendingUp, 
+  CurrencyEur, 
+  TrendUp, 
   Plus,
   Car,
   Users,
   Clock,
-  AlertTriangle,
+  Warning,
   User,
   ChartBar,
-  Settings,
+  Gear,
   SignOut,
   UserCircle
 } from '@phosphor-icons/react';
@@ -94,7 +94,7 @@ function App() {
   }
 
   const navigation = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp, permission: null },
+    { id: 'dashboard', label: 'Tableau de bord', icon: TrendUp, permission: null },
     { id: 'customers', label: 'Clients', icon: Users, permission: 'customers.read' },
     { id: 'vehicles', label: 'Véhicules', icon: Car, permission: 'vehicles.read' },
     { id: 'mechanics', label: 'Mécaniciens', icon: User, permission: 'users.read' },
@@ -103,9 +103,9 @@ function App() {
     { id: 'stock', label: 'Stock', icon: Package, permission: 'repairs.read' },
     { id: 'invoices', label: 'Facturation', icon: Euro, permission: 'invoices.read' },
     { id: 'reports', label: 'Rapports', icon: ChartBar, permission: 'reports.read' },
-    { id: 'analytics', label: 'Analyses', icon: TrendingUp, permission: 'reports.read' },
+    { id: 'analytics', label: 'Analyses', icon: TrendUp, permission: 'reports.read' },
     { id: 'users', label: 'Utilisateurs', icon: UserCircle, permission: 'users.read' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, permission: 'settings.update' }
+    { id: 'settings', label: 'Paramètres', icon: Gear, permission: 'settings.update' }
   ].filter(item => !item.permission || hasPermission(item.permission));
 
   const renderContent = () => {
@@ -229,14 +229,14 @@ function DashboardOverview({ stats, settings }: { stats: DashboardStats; setting
     {
       title: 'Stock faible',
       value: stats.lowStockItems,
-      icon: AlertTriangle,
+      icon: Warning,
       color: 'text-destructive',
       bgColor: 'bg-destructive/10'
     },
     {
       title: 'Chiffre d\'affaires',
       value: formatCurrency(stats.monthlyRevenue, settings.currency),
-      icon: Euro,
+      icon: CurrencyEur,
       color: 'text-accent',
       bgColor: 'bg-accent/10'
     }
@@ -297,7 +297,7 @@ function DashboardOverview({ stats, settings }: { stats: DashboardStats; setting
               Ajouter RDV
             </Button>
             <Button variant="outline" className="flex items-center gap-2 h-12">
-              <Euro className="w-5 h-5" />
+              <CurrencyEur className="w-5 h-5" />
               Créer facture
             </Button>
           </div>

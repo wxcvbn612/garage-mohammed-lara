@@ -12,7 +12,7 @@ import {
   Pencil, 
   Trash, 
   User as UserIcon, 
-  Mail, 
+  Envelope, 
   Shield, 
   Clock,
   Users,
@@ -98,9 +98,9 @@ export default function UserManagement() {
 
     if (editingUser) {
       // Only update password if it's provided
-      const updateData = { ...formData };
-      if (!formData.password.trim()) {
-        delete updateData.password;
+      const updateData: Partial<User> = { ...formData };
+      if (!formData.password?.trim()) {
+        delete (updateData as any).password;
       }
       updateUser(editingUser.id, updateData);
     } else {
@@ -374,7 +374,7 @@ export default function UserManagement() {
                         {user.username}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
+                        <Envelope className="w-3 h-3" />
                         {user.email}
                       </span>
                       {user.lastLogin && (

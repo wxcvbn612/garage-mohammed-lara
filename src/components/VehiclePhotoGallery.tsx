@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import '../lib/spark-mocks'; // Ensure spark is available
 import { 
   Camera, 
   Plus, 
@@ -49,7 +50,7 @@ export default function VehiclePhotoGallery({ vehicle, onClose, onPhotoAdded }: 
   useEffect(() => {
     const refreshPhotos = async () => {
       try {
-        const currentPhotos = await spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
+        const currentPhotos = await window.spark.kv.get<VehiclePhoto[]>('vehicle-photos') || [];
         setPhotos(currentPhotos);
       } catch (error) {
         console.error('Erreur lors du rafraîchissement des photos:', error);
