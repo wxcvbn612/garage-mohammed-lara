@@ -21,7 +21,7 @@ import {
   Clock
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
-import { useKV } from '@github/spark/hooks';
+import { useKV } from '@/lib/spark-mocks';
 import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface CustomerDetailViewProps {

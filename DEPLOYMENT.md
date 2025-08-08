@@ -94,7 +94,10 @@ L'application sera disponible sur `https://votre-username.github.io/garage-manag
 4. Configuration:
    - Build command: `npm run build`
    - Publish directory: `dist`
-5. Cliquez "Deploy site"
+   - Node version: 18
+5. Variables d'environnement (si nécessaire):
+   - `NODE_VERSION=18`
+6. Cliquez "Deploy site"
 
 ### Méthode 2: Via Netlify CLI
 ```bash
@@ -107,6 +110,21 @@ netlify login
 # Déployer
 netlify deploy --prod --dir=dist
 ```
+
+### Configuration spéciale pour ce projet
+Le projet inclut un fichier `netlify.toml` qui configure automatiquement:
+- Le répertoire de publication (`dist`)
+- Les redirections SPA (Single Page Application)
+- La mise en cache des assets
+- La version Node.js
+
+### Résolution des problèmes Netlify
+Si vous rencontrez l'erreur `Cannot find package '@github/spark'`:
+1. Assurez-vous que le fichier `vite.config.ts` utilise la configuration de production
+2. Vérifiez que `package.json` ne contient pas `@github/spark` dans les dépendances
+3. Confirmez que tous les imports utilisent `@/lib/spark-mocks` au lieu de `@github/spark/hooks`
+
+Le projet a été configuré pour fonctionner en production sans les dépendances Spark.
 
 ## Déploiement sur Vercel
 
