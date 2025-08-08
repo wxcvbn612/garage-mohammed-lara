@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from './hooks/useDatabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,7 +37,7 @@ import UserManagement from './components/UserManagement';
 import LoginForm from './components/LoginForm';
 import AuthDebugPanel from './components/AuthDebugPanel';
 import CloudSyncIndicator from './components/CloudSyncIndicator';
-import { useAppGear, formatCurrency } from './hooks/useAppSettings';
+import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 import { useDatabaseMigration } from './hooks/useDatabase';
 import { useCloudSyncInit } from './hooks/useCloudSyncInit';

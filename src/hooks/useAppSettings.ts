@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from '../hooks/useDatabase';
 
 interface AppSettings {
   currency: {
