@@ -21,7 +21,7 @@ import {
   WarningCircle
 } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { useAppSettings, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
 
 interface Invoice {
   id: string;
@@ -55,16 +55,16 @@ interface InvoiceItem {
 const InvoiceManagement = () => {
   const [invoices, setInvoices] = useKV<Invoice[]>('invoices', []);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFunnel, setStatusFilter] = useState<string>('all');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const settings = useAppSettings();
 
   const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesMagnifyingGlass = invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          invoice.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          invoice.vehicleModel.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    return matchesMagnifyingGlass && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
@@ -178,7 +178,7 @@ const InvoiceManagement = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Factures en Retard
             </CardTitle>
-            <AlertCircle className="w-5 h-5 text-destructive" />
+            <WarningCircle className="w-5 h-5 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">{overdueInvoices}</div>

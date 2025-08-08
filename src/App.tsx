@@ -37,7 +37,7 @@ import UserManagement from './components/UserManagement';
 import LoginForm from './components/LoginForm';
 import AuthDebugPanel from './components/AuthDebugPanel';
 import CloudSyncIndicator from './components/CloudSyncIndicator';
-import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
+import { useAppGear, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 import { useDatabaseMigration } from './hooks/useDatabase';
 import { useCloudSyncInit } from './hooks/useCloudSyncInit';
@@ -101,7 +101,7 @@ function App() {
     { id: 'repairs', label: 'Réparations', icon: Wrench, permission: 'repairs.read' },
     { id: 'appointments', label: 'Rendez-vous', icon: Calendar, permission: 'repairs.read' },
     { id: 'stock', label: 'Stock', icon: Package, permission: 'repairs.read' },
-    { id: 'invoices', label: 'Facturation', icon: Euro, permission: 'invoices.read' },
+    { id: 'invoices', label: 'Facturation', icon: CurrencyEur, permission: 'invoices.read' },
     { id: 'reports', label: 'Rapports', icon: ChartBar, permission: 'reports.read' },
     { id: 'analytics', label: 'Analyses', icon: TrendUp, permission: 'reports.read' },
     { id: 'users', label: 'Utilisateurs', icon: UserCircle, permission: 'users.read' },

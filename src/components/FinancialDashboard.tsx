@@ -17,14 +17,14 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  Euro, 
+  TrendUp as TrendingUp, 
+  TrendDown as TrendingDown, 
+  CurrencyEur as Euro, 
   Calendar,
   Wrench,
   Users,
   Package,
-  AlertTriangle
+  Warning as AlertTriangle
 } from '@phosphor-icons/react';
 import { useState, useMemo } from 'react';
 import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';

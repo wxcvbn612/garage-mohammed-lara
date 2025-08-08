@@ -70,7 +70,7 @@ export default function VehicleManagement() {
     const customer = customers.find(c => c.id === vehicle.customerId);
     const customerName = customer ? `${customer.firstName} ${customer.lastName}` : '';
     
-    const matchesSearch = !searchTerm || 
+    const matchesMagnifyingGlass = !searchTerm || 
       vehicle.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -78,7 +78,7 @@ export default function VehicleManagement() {
     
     const matchesCustomer = selectedCustomer === 'all' || vehicle.customerId === selectedCustomer;
     
-    return matchesSearch && matchesCustomer;
+    return matchesMagnifyingGlass && matchesCustomer;
   });
 
   const handleAddVehicle = () => {

@@ -10,20 +10,20 @@ import { Switch } from '@/components/ui/switch';
 import { 
   User, 
   Plus, 
-  Search, 
-  Edit,
+  MagnifyingGlass, 
+  PencilSimple,
   Trash,
   Phone,
-  Mail,
+  Envelope,
   Calendar,
   Wrench,
-  Euro,
+  CurrencyEur,
   Star
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Mechanic } from '@/entities';
 import { toast } from 'sonner';
-import { useAppSettings } from '../hooks/useAppSettings';
+import { useAppGear } from '../hooks/useAppSettings';
 
 export default function MechanicManagement() {
   const settings = useAppSettings();
@@ -394,7 +394,7 @@ export default function MechanicManagement() {
                   }{settings.currency.symbol}/h
                 </p>
               </div>
-              <Euro className="w-8 h-8 text-accent" />
+              <CurrencyEur className="w-8 h-8 text-accent" />
             </div>
           </CardContent>
         </Card>
@@ -417,7 +417,7 @@ export default function MechanicManagement() {
       <Card>
         <CardContent className="pt-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Rechercher par nom, email ou spécialisation..."
               value={searchTerm}
@@ -449,7 +449,7 @@ export default function MechanicManagement() {
                     size="sm"
                     onClick={() => handleEditMechanic(mechanic)}
                   >
-                    <Edit className="w-4 h-4" />
+                    <PencilSimple className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -464,7 +464,7 @@ export default function MechanicManagement() {
             <CardContent className="space-y-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  <Envelope className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm">{mechanic.email}</span>
                 </div>
                 
@@ -474,7 +474,7 @@ export default function MechanicManagement() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Euro className="w-4 h-4 text-muted-foreground" />
+                  <CurrencyEur className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm">{mechanic.hourlyRate}{settings.currency.symbol}/heure</span>
                 </div>
 

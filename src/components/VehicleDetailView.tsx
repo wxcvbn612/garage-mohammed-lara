@@ -9,22 +9,22 @@ import {
   User,
   Calendar,
   Wrench,
-  Euro,
+  CurrencyEur,
   Camera,
   FileText,
   Clock,
-  Settings,
-  TrendingUp,
-  AlertTriangle,
+  Gear,
+  TrendUp,
+  Warning,
   CheckCircle,
   Phone,
-  Mail,
+  Envelope,
   MapPin
 } from '@phosphor-icons/react';
 import { Vehicle, Customer, Repair, Invoice, VehiclePhoto, Appointment, Payment } from '@/entities';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
 import { useState } from 'react';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 interface VehicleDetailViewProps {
   vehicle: Vehicle;
@@ -87,8 +87,8 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
     switch (status) {
       case 'en_cours': return <Clock className="w-4 h-4" />;
       case 'termine': return <CheckCircle className="w-4 h-4" />;
-      case 'en_attente': return <AlertTriangle className="w-4 h-4" />;
-      default: return <Settings className="w-4 h-4" />;
+      case 'en_attente': return <Warning className="w-4 h-4" />;
+      default: return <Gear className="w-4 h-4" />;
     }
   };
 
@@ -159,7 +159,7 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
                 <p className="text-sm text-muted-foreground">Total dépensé</p>
                 <p className="text-2xl font-bold text-green-600">{formatCurrency(totalSpent, settings.currency)}</p>
               </div>
-              <Euro className="w-8 h-8 text-green-600/70" />
+              <CurrencyEur className="w-8 h-8 text-green-600/70" />
             </div>
           </CardContent>
         </Card>
@@ -171,7 +171,7 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
                 <p className="text-sm text-muted-foreground">En attente</p>
                 <p className="text-2xl font-bold text-orange-600">{formatCurrency(pendingAmount, settings.currency)}</p>
               </div>
-              <AlertTriangle className="w-8 h-8 text-orange-600/70" />
+              <Warning className="w-8 h-8 text-orange-600/70" />
             </div>
           </CardContent>
         </Card>
@@ -259,7 +259,7 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
                         <span className="text-sm">{customer.phone}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <Envelope className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm">{customer.email}</span>
                       </div>
                       <div className="flex items-start gap-2">

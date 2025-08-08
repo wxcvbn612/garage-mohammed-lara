@@ -13,9 +13,9 @@ import {
   CloudX, 
   Download, 
   Upload, 
-  RefreshCw, 
+  ArrowClockwise as RefreshCw, 
   History,
-  AlertCircle,
+  WarningCircle,
   CheckCircle,
   Clock,
   Server,
@@ -158,7 +158,7 @@ export default function CloudSyncSettings() {
 
           {status.error && (
             <Alert variant="destructive">
-              <AlertCircle className="w-4 h-4" />
+              <WarningCircle className="w-4 h-4" />
               <AlertDescription>{status.error}</AlertDescription>
             </Alert>
           )}
@@ -262,7 +262,7 @@ export default function CloudSyncSettings() {
         </CardContent>
       </Card>
 
-      {/* Advanced Settings */}
+      {/* Advanced Gear */}
       <Card>
         <CardHeader>
           <CardTitle 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 interface CurrencyDisplayProps {
   amount: number;

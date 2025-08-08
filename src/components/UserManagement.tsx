@@ -117,7 +117,7 @@ export default function UserManagement() {
     setIsDialogOpen(false);
   };
 
-  const handleEdit = (user: User) => {
+  const handlePencilSimple = (user: User) => {
     setEditingUser(user);
     setFormData({
       username: user.username,

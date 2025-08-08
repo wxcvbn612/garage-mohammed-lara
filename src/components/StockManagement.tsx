@@ -9,15 +9,15 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   Package, 
-  AlertTriangle,
+  Warning,
   Truck,
-  BarChart,
-  Filter
+  ChartBar,
+  Funnel as Filter
 } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 interface StockItem {
   id: string;
@@ -50,14 +50,14 @@ const StockManagement = () => {
   const [stockItems, setStockItems] = useKV<StockItem[]>('stock-items', []);
   const [movements, setMovements] = useKV<StockMovement[]>('stock-movements', []);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [stockLevelFilter, setStockLevelFilter] = useState<string>('all');
+  const [categoryFunnel, setCategoryFilter] = useState<string>('all');
+  const [stockLevelFunnel, setStockLevelFilter] = useState<string>('all');
   const settings = useAppSettings();
 
   const categories = Array.from(new Set(stockItems.map(item => item.category)));
   
   const filteredItems = stockItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesMagnifyingGlass = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.partNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.brand.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -68,7 +68,7 @@ const StockManagement = () => {
                              (stockLevelFilter === 'normal' && item.currentStock > item.minStock && item.currentStock < item.maxStock) ||
                              (stockLevelFilter === 'high' && item.currentStock >= item.maxStock);
     
-    return matchesSearch && matchesCategory && matchesStockLevel;
+    return matchesMagnifyingGlass && matchesCategory && matchesStockLevel;
   });
 
   const lowStockItems = stockItems.filter(item => item.currentStock <= item.minStock);
@@ -164,7 +164,7 @@ const StockManagement = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Stock Faible
             </CardTitle>
-            <AlertTriangle className="w-5 h-5 text-destructive" />
+            <Warning className="w-5 h-5 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">{lowStockItems.length}</div>
@@ -176,7 +176,7 @@ const StockManagement = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Valeur Totale
             </CardTitle>
-            <BarChart className="w-5 h-5 text-accent" />
+            <ChartBar className="w-5 h-5 text-accent" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalValue, settings.currency)}</div>
@@ -201,7 +201,7 @@ const StockManagement = () => {
         <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="w-5 h-5" />
+              <Warning className="w-5 h-5" />
               Alertes Stock Faible ({lowStockItems.length})
             </CardTitle>
           </CardHeader>
@@ -232,7 +232,7 @@ const StockManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Rechercher par nom, référence ou marque..."
                   value={searchTerm}

@@ -14,16 +14,16 @@ import {
   Clock, 
   CheckCircle, 
   XCircle, 
-  AlertTriangle,
-  Edit,
+  Warning,
+  PencilSimple,
   Eye,
-  Search,
+  MagnifyingGlass,
   Filter
 } from '@phosphor-icons/react';
 import { Repair, Customer, Vehicle, RepairStatus, RepairPriority } from '@/entities';
 import { repairService, customerService, vehicleService } from '@/services';
 import { toast } from 'sonner';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 export default function RepairsList() {
   const [repairs, setRepairs] = useState<Repair[]>([]);
@@ -33,8 +33,8 @@ export default function RepairsList() {
   const [isAddRepairOpen, setIsAddRepairOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [statusFunnel, setStatusFilter] = useState<string>('all');
+  const [priorityFunnel, setPriorityFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const settings = useAppSettings();
 
@@ -158,14 +158,14 @@ export default function RepairsList() {
   };
 
   const filteredRepairs = repairs.filter(repair => {
-    const matchesSearch = repair.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesMagnifyingGlass = repair.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          repair.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          getCustomerName(repair.customerId).toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || repair.status === statusFilter;
     const matchesPriority = priorityFilter === 'all' || repair.priority === priorityFilter;
     
-    return matchesSearch && matchesStatus && matchesPriority;
+    return matchesMagnifyingGlass && matchesStatus && matchesPriority;
   });
 
   if (isLoading) {
@@ -191,7 +191,7 @@ export default function RepairsList() {
         <CardContent className="pt-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative flex-1 min-w-64">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher une réparation..."
                 value={searchTerm}

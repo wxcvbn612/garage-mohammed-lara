@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  TrendingUp, 
-  Euro, 
+  TrendUp, 
+  CurrencyEur, 
   Calendar, 
   FileText,
   Download,
-  BarChart,
-  PieChart,
+  ChartBar,
+  ChartPie,
   Activity,
   Users,
   Car,
@@ -17,7 +17,7 @@ import {
 } from '@phosphor-icons/react';
 import { useState, useMemo } from 'react';
 import { Customer, Vehicle, Repair, Invoice, Mechanic } from '@/entities';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 interface ReportData {
   period: string;
@@ -219,7 +219,7 @@ ${reportData.monthlyTrends.map(trend =>
                   {formatCurrency(reportData.totalRevenue, settings.currency)}
                 </p>
               </div>
-              <Euro className="w-8 h-8 text-green-600" />
+              <CurrencyEur className="w-8 h-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -247,7 +247,7 @@ ${reportData.monthlyTrends.map(trend =>
                   {formatCurrency(reportData.avgRepairCost, settings.currency)}
                 </p>
               </div>
-              <BarChart className="w-8 h-8 text-accent" />
+              <ChartBar className="w-8 h-8 text-accent" />
             </div>
           </CardContent>
         </Card>
@@ -272,7 +272,7 @@ ${reportData.monthlyTrends.map(trend =>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="w-5 h-5" />
+              <ChartPie className="w-5 h-5" />
               Services les plus demandés
             </CardTitle>
           </CardHeader>
@@ -300,7 +300,7 @@ ${reportData.monthlyTrends.map(trend =>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
+              <TrendUp className="w-5 h-5" />
               Évolution mensuelle
             </CardTitle>
           </CardHeader>
@@ -385,7 +385,7 @@ ${reportData.monthlyTrends.map(trend =>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button variant="outline" className="h-20 flex flex-col gap-2">
-              <Euro className="w-6 h-6" />
+              <CurrencyEur className="w-6 h-6" />
               <span>Rapport financier</span>
             </Button>
             <Button variant="outline" className="h-20 flex flex-col gap-2">

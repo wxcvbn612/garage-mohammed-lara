@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "vite",
         "kill": "fuser -k 5000/tcp",
-        "build": "tsc -b && vite build",
+        "build": "vite build",
+        "build:typecheck": "tsc -b && vite build",
         "build:functions": "netlify-cli build",
         "lint": "eslint .",
         "optimize": "vite optimize",

@@ -6,7 +6,7 @@ import {
   Bell,
   X,
   CheckCircle,
-  AlertTriangle,
+  Warning,
   Info,
   Clock
 } from '@phosphor-icons/react';
@@ -120,9 +120,9 @@ export default function NotificationCenter() {
       case 'success':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
+        return <Warning className="w-5 h-5 text-yellow-600" />;
       case 'error':
-        return <AlertTriangle className="w-5 h-5 text-red-600" />;
+        return <Warning className="w-5 h-5 text-red-600" />;
       default:
         return <Info className="w-5 h-5 text-blue-600" />;
     }

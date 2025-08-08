@@ -8,14 +8,14 @@ import {
   Database, 
   Download, 
   Upload, 
-  RefreshCw, 
+  ArrowClockwise as ArrowClockwise as RefreshCw, 
   HardDrive,
   Users,
   Car,
   Wrench,
   Calendar,
   FileText,
-  AlertTriangle,
+  Warning,
   CheckCircle,
   Info
 } from '@phosphor-icons/react';
@@ -293,7 +293,7 @@ export default function DatabaseManagement() {
             
             {migrationStatus === 'error' && (
               <div className="flex items-center gap-2 text-red-600">
-                <AlertTriangle className="w-4 h-4" />
+                <Warning className="w-4 h-4" />
                 <span>Erreur durant la migration</span>
               </div>
             )}
@@ -364,7 +364,7 @@ export default function DatabaseManagement() {
             
             {totalRecords === 0 && (
               <Alert>
-                <AlertTriangle className="h-4 w-4" />
+                <Warning className="h-4 w-4" />
                 <AlertDescription>
                   Aucune donnée à exporter. Ajoutez des clients, véhicules ou réparations d'abord.
                 </AlertDescription>

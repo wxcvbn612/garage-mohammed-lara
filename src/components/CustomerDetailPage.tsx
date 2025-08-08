@@ -6,22 +6,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   User, 
   Phone, 
-  Mail, 
+  Envelope, 
   MapPin, 
   Car, 
-  Euro, 
+  CurrencyEur, 
   Calendar,
   FileText,
   CreditCard,
   ArrowLeft,
-  Settings,
+  Gear,
   CheckCircle,
   XCircle,
   Clock
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '@/lib/spark-mocks';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 import { useVehicles } from '../hooks/useDatabase';
 
 interface CustomerDetailPageProps {
@@ -110,7 +110,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
           </h1>
           <div className="flex items-center gap-6 mt-2 text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4" />
+              <Envelope className="w-4 h-4" />
               {customer.email}
             </div>
             <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
           </div>
         </div>
         <Button variant="outline">
-          <Settings className="w-4 h-4 mr-2" />
+          <Gear className="w-4 h-4 mr-2" />
           Modifier
         </Button>
       </div>
@@ -160,7 +160,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-accent/10 rounded-lg">
-                    <Euro className="w-6 h-6 text-accent" />
+                    <CurrencyEur className="w-6 h-6 text-accent" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Total facturé</p>
@@ -214,7 +214,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                 <h4 className="font-semibold mb-3">Contact</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <Envelope className="w-4 h-4 text-muted-foreground" />
                     <span>{customer.email}</span>
                   </div>
                   <div className="flex items-center gap-3">
@@ -427,7 +427,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary/10 rounded-lg">
-                          <Settings className="w-6 h-6 text-primary" />
+                          <Gear className="w-6 h-6 text-primary" />
                         </div>
                         <div>
                           <p className="text-lg font-semibold">{repair.title}</p>
@@ -452,7 +452,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
             })}
             {customerRepairs.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
-                <Settings className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <Gear className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <h3 className="text-lg font-medium mb-2">Aucune réparation</h3>
                 <p>Ce client n'a pas encore de réparation enregistrée.</p>
               </div>

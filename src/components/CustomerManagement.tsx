@@ -194,7 +194,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     }
   };
 
-  const handleSearch = async () => {
+  const handleMagnifyingGlass = async () => {
     if (searchTerm.trim()) {
       try {
         await searchCustomers(searchTerm);

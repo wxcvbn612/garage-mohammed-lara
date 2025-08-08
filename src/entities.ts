@@ -1,7 +1,12 @@
 // Types et interfaces pour l'application de gestion de garage
 
-export interface Customer {
+export interface BaseEntity {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Customer extends BaseEntity {
   firstName: string;
   lastName: string;
   email: string;
@@ -10,37 +15,40 @@ export interface Customer {
   city: string;
   postalCode?: string;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface Vehicle {
-  id: string;
+export interface Vehicle extends BaseEntity {
   customerId: string;
   brand: string;
   model: string;
   year: number;
   licensePlate: string;
+  registrationNumber?: string; // Added for compatibility
   vin: string;
   color: string;
   mileage?: number;
+  fuelType?: string; // Added for compatibility
   notes?: string;
   photoCount?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  photos?: string[]; // Added for compatibility
 }
 
-export interface VehiclePhoto {
-  id: string;
+export interface VehiclePhoto extends BaseEntity {
   vehicleId: string;
   url: string;
+  imageUrl?: string; // Added for compatibility
+  imageData?: string; // Added for compatibility
+  fileName?: string; // Added for compatibility
+  fileSize?: number; // Added for compatibility
+  category?: 'before' | 'after' | 'during' | 'general'; // Made optional and added categories
   type: 'before' | 'after' | 'during' | 'general';
   description?: string;
   uploadedAt: Date;
+  captureDate?: Date; // Added for compatibility
+  repairId?: string; // Added for compatibility
 }
 
-export interface Mechanic {
-  id: string;
+export interface Mechanic extends BaseEntity {
   firstName: string;
   lastName: string;
   email: string;
@@ -48,26 +56,24 @@ export interface Mechanic {
   specialties: string[];
   hourlyRate: number;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface Repair {
-  id: string;
+export interface Repair extends BaseEntity {
   vehicleId: string;
+  customerId?: string; // Added for compatibility
   mechanicId: string;
+  title?: string; // Added for compatibility
   description: string;
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   estimatedCost: number;
   cost: number;
+  actualCost?: number; // Added for compatibility
   parts: RepairPart[];
   laborHours: number;
   startDate?: Date;
   completionDate?: Date;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface RepairPart {
@@ -78,39 +84,36 @@ export interface RepairPart {
   totalPrice: number;
 }
 
-export interface Part {
-  id: string;
+export interface Part extends BaseEntity {
   name: string;
   reference: string;
   category: string;
   brand: string;
   unitPrice: number;
   stock: number;
+  stockQuantity?: number; // Added for compatibility
   minStock: number;
+  minStockLevel?: number; // Added for compatibility
   supplier?: string;
   description?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface Appointment {
-  id: string;
+export interface Appointment extends BaseEntity {
   customerId: string;
   vehicleId: string;
   mechanicId?: string;
   title: string;
   description?: string;
   date: Date;
+  appointmentDate?: Date; // Added for compatibility
   duration: number; // en minutes
   status: 'scheduled' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   type: 'diagnosis' | 'repair' | 'maintenance' | 'inspection';
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface Invoice {
-  id: string;
+export interface Invoice extends BaseEntity {
   number: string;
+  invoiceNumber?: string; // Added for compatibility
   customerId: string;
   repairId?: string;
   date: Date;
@@ -120,10 +123,12 @@ export interface Invoice {
   taxRate: number;
   taxAmount: number;
   total: number;
+  totalAmount?: number; // Added for compatibility
+  paidAmount?: number; // Added for compatibility
+  paymentDate?: Date; // Added for compatibility
+  paymentMethod?: string; // Added for compatibility
   status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface InvoiceItem {
@@ -135,8 +140,7 @@ export interface InvoiceItem {
   type: 'part' | 'labor' | 'service';
 }
 
-export interface Payment {
-  id: string;
+export interface Payment extends BaseEntity {
   invoiceId: string;
   customerId: string;
   amount: number;
@@ -144,7 +148,6 @@ export interface Payment {
   reference?: string;
   date: Date;
   notes?: string;
-  createdAt: Date;
 }
 
 export interface Notification {
@@ -181,4 +184,37 @@ export interface StockReport {
   lowStockItems: Part[];
   mostUsedParts: { partId: string; quantityUsed: number }[];
   stockValue: number;
+}
+
+// Additional types for compatibility
+export interface User extends BaseEntity {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  role: 'admin' | 'mechanic' | 'user';
+  isActive: boolean;
+}
+
+export interface Supplier extends BaseEntity {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  contact?: string;
+}
+
+export interface AppSettings {
+  garage: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+  };
+  business: {
+    taxRate: number;
+    language: string;
+    timezone: string;
+  };
+  currency: string;
 }

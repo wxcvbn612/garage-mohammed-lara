@@ -7,22 +7,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   User, 
   Phone, 
-  Mail, 
+  Envelope, 
   MapPin, 
   Car, 
-  Euro, 
+  CurrencyEur, 
   Calendar,
   FileText,
   CreditCard,
   ArrowLeft,
-  Settings,
+  Gear,
   CheckCircle,
   XCircle,
   Clock
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '@/lib/spark-mocks';
-import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
 
 interface CustomerDetailViewProps {
   customer: Customer | null;
@@ -103,7 +103,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
               </DialogTitle>
               <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <Mail className="w-4 h-4" />
+                  <Envelope className="w-4 h-4" />
                   {customer.email}
                 </div>
                 <div className="flex items-center gap-1">
@@ -117,7 +117,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
               </div>
             </div>
             <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
+              <Gear className="w-4 h-4 mr-2" />
               Modifier
             </Button>
           </div>
@@ -155,7 +155,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-accent/10 rounded-lg">
-                          <Euro className="w-5 h-5 text-accent" />
+                          <CurrencyEur className="w-5 h-5 text-accent" />
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Total facturé</p>
@@ -379,7 +379,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                               <div className="p-2 bg-primary/10 rounded-lg">
-                                <Settings className="w-5 h-5 text-primary" />
+                                <Gear className="w-5 h-5 text-primary" />
                               </div>
                               <div>
                                 <p className="font-medium">{repair.description}</p>
