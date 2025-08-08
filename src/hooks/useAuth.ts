@@ -1,4 +1,4 @@
-import { useKV } from '@/lib/spark-mocks';
+import { useKV } from './useKV';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 

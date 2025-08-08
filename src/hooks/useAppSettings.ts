@@ -1,4 +1,4 @@
-import { useKV } from '../hooks/useDatabase';
+import { useKV } from './useKV';
 
 interface AppSettings {
   currency: {
@@ -41,8 +41,13 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 export function useAppSettings() {
-  const [settings] = useKV<AppSettings>('app-settings', DEFAULT_SETTINGS);
-  return settings;
+  try {
+    const [settings] = useKV<AppSettings>('app-settings', DEFAULT_SETTINGS);
+    return settings || DEFAULT_SETTINGS;
+  } catch (error) {
+    console.error('Error in useAppSettings:', error);
+    return DEFAULT_SETTINGS;
+  }
 }
 
 export function formatCurrency(amount: number, settings?: AppSettings['currency']): string {

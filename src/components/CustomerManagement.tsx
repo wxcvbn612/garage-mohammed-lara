@@ -19,6 +19,8 @@ interface CustomerManagementProps {
 }
 
 export default function CustomerManagement({ isOpen, onOpenChange }: CustomerManagementProps) {
+  console.log('CustomerManagement loading...');
+  
   const { 
     customers, 
     loading, 
@@ -30,7 +32,12 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     getCustomerWithVehicles,
     refreshCustomers
   } = useCustomers();
+  
+  console.log('Customers hook data:', { customers, loading, error, customersLength: customers?.length });
+  
   const { vehicles, refreshVehicles } = useVehicles();
+  console.log('Vehicles hook data:', { vehicles, vehiclesLength: vehicles?.length });
+  
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
   const [isEditCustomerOpen, setIsEditCustomerOpen] = useState(false);
@@ -145,13 +152,14 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     }
   };
 
-  const filteredCustomers = customers.filter(customer =>
-    customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCustomers = (customers && Array.isArray(customers)) ? customers.filter(customer =>
+    customer.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) : [];
 
   const getCustomerVehicles = (customerId: string) => {
+    if (!vehicles || !Array.isArray(vehicles)) return [];
     const vehicleCount = vehicles.filter(vehicle => vehicle.customerId === customerId);
     console.log(`Client ${customerId} a ${vehicleCount.length} véhicule(s):`, vehicleCount);
     return vehicleCount;
@@ -242,6 +250,18 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
           <h3 className="text-lg font-medium text-foreground mb-2">Erreur lors du chargement des données</h3>
           <p className="text-muted-foreground mb-4">{error}</p>
           <Button onClick={() => window.location.reload()}>Réessayer</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Gérer l'état de chargement
+  if (loading && (!customers || customers.length === 0)) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-lg font-medium text-foreground mb-2">Chargement des clients...</h3>
         </div>
       </div>
     );

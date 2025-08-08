@@ -41,6 +41,7 @@ import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
 import { useDatabaseMigration } from './hooks/useDatabase';
 import { useCloudSyncInit } from './hooks/useCloudSyncInit';
+import { useKV } from './hooks/useKV';
 import './utils/databaseTester'; // Import testeur pour développement
 
 interface DashboardStats {
@@ -53,9 +54,42 @@ interface DashboardStats {
 }
 
 function App() {
+  console.log('App component loading...');
+  
   const [activeTab, setActiveTab] = useState('dashboard');
-  const settings = useAppSettings();
-  const { authState, login, logout, hasPermission, resetAuthState } = useAuth();
+  
+  let settings;
+  try {
+    settings = useAppSettings();
+    console.log('Settings loaded:', settings);
+  } catch (error) {
+    console.error('Error loading settings:', error);
+    settings = {
+      currency: { code: 'MAD', symbol: 'DH', name: 'Dirham marocain', position: 'after' },
+      garage: { name: 'Garage Mohammed', address: 'Larache, Maroc', phone: '+212 6XX XXX XXX', email: 'contact@garage-mohammed.ma' },
+      business: { taxRate: 20, language: 'fr', timezone: 'Africa/Casablanca' }
+    };
+  }
+  
+  let authState, login, logout, hasPermission, resetAuthState;
+  try {
+    const authHook = useAuth();
+    authState = authHook.authState;
+    login = authHook.login;
+    logout = authHook.logout;
+    hasPermission = authHook.hasPermission;
+    resetAuthState = authHook.resetAuthState;
+    console.log('Auth loaded:', authState);
+  } catch (error) {
+    console.error('Error loading auth:', error);
+    // Provide fallback auth state
+    authState = { isAuthenticated: false, user: null, loading: false };
+    login = async () => false;
+    logout = () => {};
+    hasPermission = () => false;
+    resetAuthState = () => {};
+  }
+  
   const { isInitializing, migrationComplete } = useDatabaseMigration();
   
   // Initialize cloud sync
@@ -84,10 +118,10 @@ function App() {
   }
 
   // Show login form if not authenticated
-  if (!authState.isAuthenticated) {
+  if (!authState?.isAuthenticated) {
     return (
       <div>
-        <LoginForm onLogin={login} loading={authState.loading} />
+        <LoginForm onLogin={login} loading={authState?.loading || false} />
         <AuthDebugPanel />
       </div>
     );
@@ -147,8 +181,8 @@ function App() {
               <Car className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">{settings.garage.name}</h1>
-              <p className="text-sm text-muted-foreground">{settings.garage.address}</p>
+              <h1 className="text-xl font-bold text-foreground">{settings?.garage?.name || 'Garage Mohammed'}</h1>
+              <p className="text-sm text-muted-foreground">{settings?.garage?.address || 'Larache, Maroc'}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -157,7 +191,7 @@ function App() {
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="flex items-center gap-2">
                 <UserCircle className="w-4 h-4" />
-                {authState.user?.firstName} {authState.user?.lastName}
+                {authState?.user?.firstName || 'Utilisateur'} {authState?.user?.lastName || ''}
               </Badge>
               <Button
                 variant="ghost"
@@ -235,7 +269,7 @@ function DashboardOverview({ stats, settings }: { stats: DashboardStats; setting
     },
     {
       title: 'Chiffre d\'affaires',
-      value: formatCurrency(stats.monthlyRevenue, settings.currency),
+      value: formatCurrency(stats.monthlyRevenue, settings?.currency),
       icon: CurrencyEur,
       color: 'text-accent',
       bgColor: 'bg-accent/10'

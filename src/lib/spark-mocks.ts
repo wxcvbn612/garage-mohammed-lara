@@ -1,7 +1,8 @@
 import { DatabaseService } from './database';
 
-// Re-export the enhanced useKV hook from database hooks
-export { useKV, useDatabaseMigration } from '../hooks/useDatabase';
+// Re-export the enhanced useKV hook from the dedicated hook
+export { useKV } from '../hooks/useKV';
+export { useDatabaseMigration } from '../hooks/useDatabase';
 
 // Mock Spark global object for production
 if (typeof window !== 'undefined' && !window.spark) {
