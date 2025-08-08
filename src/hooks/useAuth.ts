@@ -108,9 +108,13 @@ export function useAuth() {
   }, [users.length, setUsers]);
 
   const login = async (username: string, password: string): Promise<boolean> => {
+    // Mettre l'état en loading
     setAuthState(current => ({ ...current, loading: true }));
 
     try {
+      // Simuler un délai de connexion réaliste
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       // Simple password validation (in real app, use proper hashing)
       const user = users.find(u => u.username === username && u.isActive);
       
@@ -125,6 +129,7 @@ export function useAuth() {
           currentUsers.map(u => u.id === user.id ? updatedUser : u)
         );
 
+        // Connecter l'utilisateur
         setAuthState({
           isAuthenticated: true,
           user: updatedUser,
@@ -134,13 +139,26 @@ export function useAuth() {
         toast.success(`Bienvenue, ${user.firstName} ${user.lastName}!`);
         return true;
       } else {
+        // Échec de connexion
+        setAuthState(current => ({ 
+          ...current, 
+          loading: false,
+          isAuthenticated: false,
+          user: null
+        }));
         toast.error('Nom d\'utilisateur ou mot de passe incorrect');
-        setAuthState(current => ({ ...current, loading: false }));
         return false;
       }
     } catch (error) {
+      console.error('Erreur lors de la connexion:', error);
+      // Échec de connexion avec erreur
+      setAuthState(current => ({ 
+        ...current, 
+        loading: false,
+        isAuthenticated: false,
+        user: null
+      }));
       toast.error('Erreur lors de la connexion');
-      setAuthState(current => ({ ...current, loading: false }));
       return false;
     }
   };

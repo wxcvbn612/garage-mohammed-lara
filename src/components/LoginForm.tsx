@@ -17,8 +17,16 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
-      await onLogin(username.trim(), password);
+    if (username.trim() && password.trim() && !loading) {
+      try {
+        const success = await onLogin(username.trim(), password);
+        if (!success) {
+          // Le hook useAuth gère déjà l'état de chargement et les erreurs
+          console.log('Échec de la connexion');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+      }
     }
   };
 
@@ -97,7 +105,6 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
               </Button>
             </form>
 
-            {/* Demo Credentials */}
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <p className="text-xs text-muted-foreground mb-2 font-medium">
                 Comptes de démonstration :
@@ -106,6 +113,11 @@ export default function LoginForm({ onLogin, loading }: LoginFormProps) {
                 <p><strong>Admin:</strong> admin / admin123</p>
                 <p><strong>Autres rôles:</strong> username / password</p>
               </div>
+              {loading && (
+                <div className="mt-2 text-xs text-primary">
+                  Connexion en cours...
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
