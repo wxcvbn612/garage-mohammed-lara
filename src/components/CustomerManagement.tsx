@@ -174,6 +174,8 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     });
     setIsEditCustomerOpen(true);
   };
+
+  const handleDeleteCustomer = (customerId: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
       try {
         setCustomers(prev => prev.filter(c => c.id !== customerId));
