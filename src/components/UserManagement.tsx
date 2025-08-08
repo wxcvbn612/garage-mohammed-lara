@@ -11,7 +11,7 @@ import {
   Plus, 
   Pencil, 
   Trash, 
-  User, 
+  User as UserIcon, 
   Mail, 
   Shield, 
   Clock,
@@ -315,7 +315,7 @@ export default function UserManagement() {
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-muted-foreground" />
+                    <UserIcon className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -332,7 +332,7 @@ export default function UserManagement() {
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <User className="w-3 h-3" />
+                        <UserIcon className="w-3 h-3" />
                         {user.username}
                       </span>
                       <span className="flex items-center gap-1">
@@ -394,7 +394,7 @@ export default function UserManagement() {
             <div className="space-y-4">
               <div className="text-center">
                 <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
-                  <User className="w-8 h-8 text-muted-foreground" />
+                  <UserIcon className="w-8 h-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-medium">{selectedUser.firstName} {selectedUser.lastName}</h3>
                 <Badge className={ROLE_COLORS[selectedUser.role]}>
