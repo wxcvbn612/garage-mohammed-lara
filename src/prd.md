@@ -77,10 +77,20 @@
 - **Purpose**: Éviter les ruptures de stock et optimiser les commandes
 - **Success Criteria**: Alertes proactives, gestion automatique des seuils
 
-### Facturation et Paiements
-- **Functionality**: Génération automatique de factures, suivi des paiements
-- **Purpose**: Automatiser la facturation et améliorer le suivi financier
-- **Success Criteria**: Facturation rapide, suivi précis des impayés
+### Système de Facturation et Paiements Configurable
+- **Functionality**: Génération automatique de factures avec devise configurable, suivi des paiements
+- **Purpose**: Automatiser la facturation et améliorer le suivi financier avec support multi-devises
+- **Success Criteria**: Facturation rapide, suivi précis des impayés, configuration flexible de la devise
+
+### Système d'Authentification et Gestion des Utilisateurs
+- **Functionality**: Authentification sécurisée avec gestion des rôles et permissions granulaires
+- **Purpose**: Contrôler l'accès aux fonctionnalités selon les rôles utilisateur et sécuriser l'application
+- **Success Criteria**: Connexion sécurisée, permissions respectées, gestion complète des utilisateurs
+
+### Paramètres d'Application Configurables
+- **Functionality**: Interface de configuration pour les paramètres globaux (devise, informations garage, etc.)
+- **Purpose**: Permettre la personnalisation de l'application selon les besoins spécifiques
+- **Success Criteria**: Configuration intuitive, application immédiate des changements, sauvegarde persistante
 
 ## Design Direction
 

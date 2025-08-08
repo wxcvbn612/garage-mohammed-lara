@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, User, Phone, Mail, MapPin, PencilSimple, Trash, Search, Eye, ArrowLeft } from '@phosphor-icons/react';
+import { Plus, User, Phone, Mail, MapPin, PencilSimple, Trash, Search, Eye, ArrowLeft, Shield } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
 import { useKV } from '@github/spark/hooks';
+import { useAuth } from '../hooks/useAuth';
 import CustomerDetailPage from './CustomerDetailPage';
 
 interface CustomerManagementProps {
@@ -26,6 +27,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { hasPermission } = useAuth();
 
   // Formulaire client
   const [customerForm, setCustomerForm] = useState({
@@ -196,6 +198,25 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     );
   }
 
+  // Check permissions
+  if (!hasPermission('customers.read')) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">Accès refusé</h3>
+          <p className="text-muted-foreground">
+            Vous n'avez pas les permissions nécessaires pour accéder à la gestion des clients.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const canCreateCustomer = hasPermission('customers.create');
+  const canUpdateCustomer = hasPermission('customers.update');
+  const canDeleteCustomer = hasPermission('customers.delete');
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -210,10 +231,12 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
               className="pl-10 w-64"
             />
           </div>
-          <Button onClick={() => setIsAddCustomerOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Nouveau Client
-          </Button>
+          {canCreateCustomer && (
+            <Button onClick={() => setIsAddCustomerOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Nouveau Client
+            </Button>
+          )}
         </div>
       </div>
 
@@ -231,12 +254,16 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
                   <Button size="sm" variant="ghost" onClick={() => handleViewCustomer(customer)}>
                     <Eye className="w-4 h-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleEditClick(customer)} title="Modifier">
-                    <PencilSimple className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
-                    <Trash className="w-4 h-4 text-destructive" />
-                  </Button>
+                  {canUpdateCustomer && (
+                    <Button size="sm" variant="ghost" onClick={() => handleEditClick(customer)} title="Modifier">
+                      <PencilSimple className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {canDeleteCustomer && (
+                    <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
+                      <Trash className="w-4 h-4 text-destructive" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardHeader>

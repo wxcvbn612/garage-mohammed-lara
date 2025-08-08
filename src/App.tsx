@@ -15,7 +15,9 @@ import {
   AlertTriangle,
   User,
   ChartBar,
-  Settings
+  Settings,
+  SignOut,
+  UserCircle
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Toaster } from 'sonner';
@@ -31,7 +33,10 @@ import MechanicManagement from './components/MechanicManagement';
 import ReportsManagement from './components/ReportsManagement';
 import NotificationCenter from './components/NotificationCenter';
 import SettingsManagement from './components/SettingsManagement';
+import UserManagement from './components/UserManagement';
+import LoginForm from './components/LoginForm';
 import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
+import { useAuth } from './hooks/useAuth';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -45,6 +50,7 @@ interface DashboardStats {
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const settings = useAppSettings();
+  const { authState, login, logout, hasPermission } = useAuth();
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -54,19 +60,25 @@ function App() {
     unpaidInvoices: 0
   });
 
+  // Show login form if not authenticated
+  if (!authState.isAuthenticated) {
+    return <LoginForm onLogin={login} loading={authState.loading} />;
+  }
+
   const navigation = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp },
-    { id: 'customers', label: 'Clients', icon: Users },
-    { id: 'vehicles', label: 'Véhicules', icon: Car },
-    { id: 'mechanics', label: 'Mécaniciens', icon: User },
-    { id: 'repairs', label: 'Réparations', icon: Wrench },
-    { id: 'appointments', label: 'Rendez-vous', icon: Calendar },
-    { id: 'stock', label: 'Stock', icon: Package },
-    { id: 'invoices', label: 'Facturation', icon: Euro },
-    { id: 'reports', label: 'Rapports', icon: ChartBar },
-    { id: 'analytics', label: 'Analyses', icon: TrendingUp },
-    { id: 'settings', label: 'Paramètres', icon: Settings }
-  ];
+    { id: 'dashboard', label: 'Tableau de bord', icon: TrendingUp, permission: null },
+    { id: 'customers', label: 'Clients', icon: Users, permission: 'customers.read' },
+    { id: 'vehicles', label: 'Véhicules', icon: Car, permission: 'vehicles.read' },
+    { id: 'mechanics', label: 'Mécaniciens', icon: User, permission: 'users.read' },
+    { id: 'repairs', label: 'Réparations', icon: Wrench, permission: 'repairs.read' },
+    { id: 'appointments', label: 'Rendez-vous', icon: Calendar, permission: 'repairs.read' },
+    { id: 'stock', label: 'Stock', icon: Package, permission: 'repairs.read' },
+    { id: 'invoices', label: 'Facturation', icon: Euro, permission: 'invoices.read' },
+    { id: 'reports', label: 'Rapports', icon: ChartBar, permission: 'reports.read' },
+    { id: 'analytics', label: 'Analyses', icon: TrendingUp, permission: 'reports.read' },
+    { id: 'users', label: 'Utilisateurs', icon: UserCircle, permission: 'users.read' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, permission: 'settings.update' }
+  ].filter(item => !item.permission || hasPermission(item.permission));
 
   const renderContent = () => {
     switch (activeTab) {
@@ -88,6 +100,8 @@ function App() {
         return <ReportsManagement />;
       case 'analytics':
         return <FinancialDashboard />;
+      case 'users':
+        return <UserManagement />;
       case 'settings':
         return <SettingsManagement />;
       default:
@@ -111,10 +125,21 @@ function App() {
           </div>
           <div className="flex items-center gap-4">
             <NotificationCenter />
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              Mohammed Larache
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="flex items-center gap-2">
+                <UserCircle className="w-4 h-4" />
+                {authState.user?.firstName} {authState.user?.lastName}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <SignOut className="w-4 h-4" />
+                Déconnexion
+              </Button>
+            </div>
           </div>
         </div>
       </header>
