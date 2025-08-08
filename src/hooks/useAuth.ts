@@ -8,6 +8,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  password: string;
   role: 'admin' | 'manager' | 'mechanic' | 'receptionist';
   isActive: boolean;
   createdAt: string;
@@ -108,6 +109,7 @@ export function useAuth() {
           email: 'admin@garage-mohammed.com',
           firstName: 'Mohammed',
           lastName: 'Larache',
+          password: 'admin123',
           role: 'admin',
           isActive: true,
           createdAt: new Date().toISOString(),
@@ -131,7 +133,7 @@ export function useAuth() {
       // Simple password validation (in real app, use proper hashing)
       const user = users.find(u => u.username === username && u.isActive);
       
-      if (user && (password === 'admin123' || password === 'password')) {
+      if (user && user.password === password) {
         const updatedUser = {
           ...user,
           lastLogin: new Date().toISOString()
@@ -187,7 +189,7 @@ export function useAuth() {
     return authState.user?.permissions.includes(permission) || false;
   };
 
-  const createUser = (userData: Omit<User, 'id' | 'createdAt' | 'permissions'>): User => {
+  const createUser = (userData: Omit<User, 'id' | 'createdAt' | 'permissions'> & { password: string }): User => {
     const newUser: User = {
       ...userData,
       id: `user-${Date.now()}`,
@@ -212,6 +214,15 @@ export function useAuth() {
           : user
       )
     );
+    
+    // If updating current user, update auth state
+    if (userId === authState.user?.id) {
+      setAuthState(current => ({
+        ...current,
+        user: current.user ? { ...current.user, ...updates } : null
+      }));
+    }
+    
     toast.success('Utilisateur mis à jour');
   };
 

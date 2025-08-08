@@ -27,6 +27,7 @@ interface UserFormData {
   email: string;
   firstName: string;
   lastName: string;
+  password: string;
   role: User['role'];
   isActive: boolean;
 }
@@ -57,6 +58,7 @@ export default function UserManagement() {
     email: '',
     firstName: '',
     lastName: '',
+    password: '',
     role: 'receptionist',
     isActive: true
   });
@@ -67,6 +69,7 @@ export default function UserManagement() {
       email: '',
       firstName: '',
       lastName: '',
+      password: '',
       role: 'receptionist',
       isActive: true
     });
@@ -81,8 +84,25 @@ export default function UserManagement() {
       return;
     }
 
+    // For new users, password is required
+    if (!editingUser && !formData.password.trim()) {
+      toast.error('Le mot de passe est obligatoire pour un nouvel utilisateur');
+      return;
+    }
+
+    // Password validation for new users or when password is provided
+    if ((!editingUser || formData.password.trim()) && formData.password.length < 6) {
+      toast.error('Le mot de passe doit contenir au moins 6 caractères');
+      return;
+    }
+
     if (editingUser) {
-      updateUser(editingUser.id, formData);
+      // Only update password if it's provided
+      const updateData = { ...formData };
+      if (!formData.password.trim()) {
+        delete updateData.password;
+      }
+      updateUser(editingUser.id, updateData);
     } else {
       // Check if username already exists
       const existingUser = users.find(u => u.username === formData.username.trim());
@@ -104,6 +124,7 @@ export default function UserManagement() {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      password: '', // Don't pre-fill password for security
       role: user.role,
       isActive: user.isActive
     });
@@ -197,6 +218,23 @@ export default function UserManagement() {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">
+                    Mot de passe {editingUser ? '(laisser vide pour ne pas changer)' : '*'}
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required={!editingUser}
+                    placeholder={editingUser ? 'Nouveau mot de passe' : 'Mot de passe'}
+                  />
+                  {formData.password && formData.password.length < 6 && (
+                    <p className="text-xs text-destructive">Le mot de passe doit contenir au moins 6 caractères</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
