@@ -24,6 +24,7 @@ import {
 import { Vehicle, Customer, Repair, Invoice, VehiclePhoto, Appointment, Payment } from '@/entities';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
 import { useState } from 'react';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface VehicleDetailViewProps {
   vehicle: Vehicle;
@@ -31,6 +32,7 @@ interface VehicleDetailViewProps {
 }
 
 export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailViewProps) {
+  const settings = useAppSettings();
   const [customers] = useKV<Customer[]>('customers', []);
   const [repairs] = useKV<Repair[]>('repairs', []);
   const [invoices] = useKV<Invoice[]>('invoices', []);
@@ -155,7 +157,7 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total dépensé</p>
-                <p className="text-2xl font-bold text-green-600">{totalSpent}€</p>
+                <p className="text-2xl font-bold text-green-600">{formatCurrency(totalSpent, settings.currency)}</p>
               </div>
               <Euro className="w-8 h-8 text-green-600/70" />
             </div>
@@ -167,7 +169,7 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">En attente</p>
-                <p className="text-2xl font-bold text-orange-600">{pendingAmount}€</p>
+                <p className="text-2xl font-bold text-orange-600">{formatCurrency(pendingAmount, settings.currency)}</p>
               </div>
               <AlertTriangle className="w-8 h-8 text-orange-600/70" />
             </div>
@@ -334,12 +336,12 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Coût estimé</p>
-                        <p className="font-medium">{repair.estimatedCost}€</p>
+                        <p className="font-medium">{formatCurrency(repair.estimatedCost, settings.currency)}</p>
                       </div>
                       {repair.actualCost && (
                         <div>
                           <p className="text-muted-foreground">Coût réel</p>
-                          <p className="font-medium">{repair.actualCost}€</p>
+                          <p className="font-medium">{formatCurrency(repair.actualCost, settings.currency)}</p>
                         </div>
                       )}
                       <div>
@@ -436,19 +438,19 @@ export default function VehicleDetailView({ vehicle, onClose }: VehicleDetailVie
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Montant HT</p>
-                        <p className="font-medium">{invoice.subtotal}€</p>
+                        <p className="font-medium">{formatCurrency(invoice.subtotal, settings.currency)}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">TVA</p>
-                        <p className="font-medium">{invoice.taxAmount}€</p>
+                        <p className="font-medium">{formatCurrency(invoice.taxAmount, settings.currency)}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Total TTC</p>
-                        <p className="font-medium">{invoice.totalAmount}€</p>
+                        <p className="font-medium">{formatCurrency(invoice.totalAmount, settings.currency)}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Payé</p>
-                        <p className="font-medium">{invoice.paidAmount}€</p>
+                        <p className="font-medium">{formatCurrency(invoice.paidAmount, settings.currency)}</p>
                       </div>
                     </div>
                     {invoice.paymentDate && (

@@ -23,8 +23,10 @@ import {
 import { useState } from 'react';
 import { Mechanic } from '@/entities';
 import { toast } from 'sonner';
+import { useAppSettings } from '../hooks/useAppSettings';
 
 export default function MechanicManagement() {
+  const settings = useAppSettings();
   const [mechanics, setMechanics] = useKV<Mechanic[]>('mechanics', []);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -237,7 +239,7 @@ export default function MechanicManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hourlyRate">Tarif horaire (€)</Label>
+                <Label htmlFor="hourlyRate">Tarif horaire ({settings.currency.symbol})</Label>
                 <Input
                   id="hourlyRate"
                   type="number"
@@ -389,7 +391,7 @@ export default function MechanicManagement() {
                   {mechanics.length > 0 
                     ? (mechanics.reduce((sum, m) => sum + m.hourlyRate, 0) / mechanics.length).toFixed(0)
                     : 0
-                  }€/h
+                  }{settings.currency.symbol}/h
                 </p>
               </div>
               <Euro className="w-8 h-8 text-accent" />
@@ -473,7 +475,7 @@ export default function MechanicManagement() {
 
                 <div className="flex items-center gap-2">
                   <Euro className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{mechanic.hourlyRate}€/heure</span>
+                  <span className="text-sm">{mechanic.hourlyRate}{settings.currency.symbol}/heure</span>
                 </div>
 
                 <div className="flex items-center gap-2">

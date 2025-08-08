@@ -174,7 +174,7 @@ const FinancialDashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip formatter={(value) => [`${value}€`, '']} />
+                <Tooltip formatter={(value) => [formatCurrency(Number(value), settings.currency), '']} />
                 <Legend />
                 <Line 
                   type="monotone" 
@@ -252,7 +252,7 @@ const FinancialDashboard = () => {
                   dataKey="revenue" 
                   stroke="#3b82f6" 
                   strokeWidth={2}
-                  name="Chiffre d'affaires (€)"
+                  name={`Chiffre d'affaires (${settings.currency.symbol})`}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -270,7 +270,7 @@ const FinancialDashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
                 <YAxis dataKey="type" type="category" width={80} />
-                <Tooltip formatter={(value) => [`${value}€`, 'CA']} />
+                <Tooltip formatter={(value) => [formatCurrency(Number(value), settings.currency), 'CA']} />
                 <Bar dataKey="revenue" fill="#10b981" />
               </BarChart>
             </ResponsiveContainer>
@@ -291,11 +291,11 @@ const FinancialDashboard = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">CA moyen mensuel:</span>
-                <span className="font-medium">{avgMonthlyRevenue.toLocaleString()}€</span>
+                <span className="font-medium">{formatCurrency(avgMonthlyRevenue, settings.currency)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Meilleur mois:</span>
-                <span className="font-medium">Juin ({currentMonth.revenue.toLocaleString()}€)</span>
+                <span className="font-medium">Juin ({formatCurrency(currentMonth.revenue, settings.currency)})</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Croissance:</span>
@@ -322,12 +322,12 @@ const FinancialDashboard = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">CA généré:</span>
-                <span className="font-medium">{topPerformingRepairType.revenue.toLocaleString()}€</span>
+                <span className="font-medium">{formatCurrency(topPerformingRepairType.revenue, settings.currency)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Panier moyen:</span>
                 <span className="font-medium">
-                  {(topPerformingRepairType.revenue / topPerformingRepairType.count).toFixed(0)}€
+                  {formatCurrency((topPerformingRepairType.revenue / topPerformingRepairType.count), settings.currency)}
                 </span>
               </div>
             </div>
@@ -383,11 +383,11 @@ const FinancialDashboard = () => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{totalRevenue.toLocaleString()}€</div>
+              <div className="text-3xl font-bold text-blue-600">{formatCurrency(totalRevenue, settings.currency)}</div>
               <div className="text-sm text-muted-foreground">Chiffre d'affaires total</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">{totalProfit.toLocaleString()}€</div>
+              <div className="text-3xl font-bold text-green-600">{formatCurrency(totalProfit, settings.currency)}</div>
               <div className="text-sm text-muted-foreground">Bénéfice total</div>
             </div>
             <div className="text-center">

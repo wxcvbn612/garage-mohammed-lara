@@ -157,7 +157,7 @@ const InvoiceManagement = () => {
             <Euro className="w-5 h-5 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-accent">{totalRevenue.toLocaleString()}€</div>
+            <div className="text-2xl font-bold text-accent">{formatCurrency(totalRevenue, settings.currency)}</div>
           </CardContent>
         </Card>
 
@@ -169,7 +169,7 @@ const InvoiceManagement = () => {
             <Clock className="w-5 h-5 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{pendingAmount.toLocaleString()}€</div>
+            <div className="text-2xl font-bold text-blue-600">{formatCurrency(pendingAmount, settings.currency)}</div>
           </CardContent>
         </Card>
 
@@ -549,15 +549,15 @@ const CreateInvoiceForm = ({ onAdd }: { onAdd: (invoice: Invoice) => void }) => 
           <div className="w-64 space-y-2">
             <div className="flex justify-between">
               <span>Sous-total:</span>
-              <span>{subtotal.toFixed(2)}€</span>
+              <span>{formatCurrency(subtotal, settings.currency)}</span>
             </div>
             <div className="flex justify-between">
               <span>TVA ({taxRate}%):</span>
-              <span>{taxAmount.toFixed(2)}€</span>
+              <span>{formatCurrency(taxAmount, settings.currency)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t pt-2">
               <span>Total:</span>
-              <span>{total.toFixed(2)}€</span>
+              <span>{formatCurrency(total, settings.currency)}</span>
             </div>
           </div>
         </div>
@@ -611,7 +611,7 @@ const PaymentForm = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="p-4 bg-muted/50 rounded-lg">
         <div className="text-sm text-muted-foreground">Montant à encaisser</div>
-        <div className="text-2xl font-bold">{invoice.total.toLocaleString()}€</div>
+        <div className="text-2xl font-bold">{formatCurrency(invoice.total, settings.currency)}</div>
       </div>
 
       <div>
@@ -699,8 +699,8 @@ const InvoiceDetail = ({ invoice }: { invoice: Invoice }) => {
               <TableRow key={item.id}>
                 <TableCell>{item.description}</TableCell>
                 <TableCell className="text-right">{item.quantity}</TableCell>
-                <TableCell className="text-right">{item.unitPrice.toFixed(2)}€</TableCell>
-                <TableCell className="text-right">{item.total.toFixed(2)}€</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.unitPrice, settings.currency)}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.total, settings.currency)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -713,15 +713,15 @@ const InvoiceDetail = ({ invoice }: { invoice: Invoice }) => {
           <div className="w-64 space-y-2">
             <div className="flex justify-between">
               <span>Sous-total:</span>
-              <span>{invoice.subtotal.toFixed(2)}€</span>
+              <span>{formatCurrency(invoice.subtotal, settings.currency)}</span>
             </div>
             <div className="flex justify-between">
               <span>TVA ({invoice.taxRate}%):</span>
-              <span>{invoice.taxAmount.toFixed(2)}€</span>
+              <span>{formatCurrency(invoice.taxAmount, settings.currency)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t pt-2">
               <span>Total:</span>
-              <span>{invoice.total.toFixed(2)}€</span>
+              <span>{formatCurrency(invoice.total, settings.currency)}</span>
             </div>
           </div>
         </div>

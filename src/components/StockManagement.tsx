@@ -179,7 +179,7 @@ const StockManagement = () => {
             <BarChart className="w-5 h-5 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalValue.toLocaleString()}€</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalValue, settings.currency)}</div>
           </CardContent>
         </Card>
 
@@ -491,7 +491,7 @@ const AddItemForm = ({ onAdd }: { onAdd: (item: StockItem) => void }) => {
 
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <Label htmlFor="unitPrice">Prix unitaire (€)</Label>
+          <Label htmlFor="unitPrice">Prix unitaire ({settings.currency.symbol})</Label>
           <Input
             id="unitPrice"
             type="number"

@@ -17,6 +17,7 @@ import {
 } from '@phosphor-icons/react';
 import { useState, useMemo } from 'react';
 import { Customer, Vehicle, Repair, Invoice, Mechanic } from '@/entities';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface ReportData {
   period: string;
@@ -30,6 +31,7 @@ interface ReportData {
 }
 
 export default function ReportsManagement() {
+  const settings = useAppSettings();
   const [customers] = useKV<Customer[]>('customers', []);
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [repairs] = useKV<Repair[]>('repairs', []);
@@ -150,9 +152,9 @@ RAPPORT DE GARAGE - ${reportData.period.toUpperCase()}
 Généré le: ${new Date().toLocaleDateString('fr-FR')}
 
 === RÉSUMÉ EXÉCUTIF ===
-Chiffre d'affaires total: ${reportData.totalRevenue.toFixed(2)}€
+Chiffre d'affaires total: ${formatCurrency(reportData.totalRevenue, settings.currency)}
 Nombre de réparations: ${reportData.totalRepairs}
-Coût moyen par réparation: ${reportData.avgRepairCost.toFixed(2)}€
+Coût moyen par réparation: ${formatCurrency(reportData.avgRepairCost, settings.currency)}
 Clients uniques: ${reportData.customerCount}
 
 === SERVICES POPULAIRES ===
@@ -162,12 +164,12 @@ ${reportData.popularServices.map((service, index) =>
 
 === PERFORMANCE DES MÉCANICIENS ===
 ${reportData.mechanicPerformance.map((perf, index) => 
-  `${index + 1}. ${perf.mechanicName} - ${perf.revenue.toFixed(2)}€ (${perf.repairs} réparations)`
+  `${index + 1}. ${perf.mechanicName} - ${formatCurrency(perf.revenue, settings.currency)} (${perf.repairs} réparations)`
 ).join('\n')}
 
 === TENDANCES MENSUELLES ===
 ${reportData.monthlyTrends.map(trend => 
-  `${trend.month}: ${trend.revenue.toFixed(2)}€ (${trend.repairs} réparations)`
+  `${trend.month}: ${formatCurrency(trend.revenue, settings.currency)} (${trend.repairs} réparations)`
 ).join('\n')}
     `.trim();
 
@@ -214,7 +216,7 @@ ${reportData.monthlyTrends.map(trend =>
               <div>
                 <p className="text-sm text-muted-foreground">Chiffre d'affaires</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {reportData.totalRevenue.toFixed(0)}€
+                  {formatCurrency(reportData.totalRevenue, settings.currency)}
                 </p>
               </div>
               <Euro className="w-8 h-8 text-green-600" />
@@ -242,7 +244,7 @@ ${reportData.monthlyTrends.map(trend =>
               <div>
                 <p className="text-sm text-muted-foreground">Coût moyen</p>
                 <p className="text-2xl font-bold text-accent">
-                  {reportData.avgRepairCost.toFixed(0)}€
+                  {formatCurrency(reportData.avgRepairCost, settings.currency)}
                 </p>
               </div>
               <BarChart className="w-8 h-8 text-accent" />
@@ -313,7 +315,7 @@ ${reportData.monthlyTrends.map(trend =>
                     <span className="font-medium">{trend.month}</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold">{trend.revenue.toFixed(0)}€</div>
+                    <div className="font-bold">{formatCurrency(trend.revenue, settings.currency)}</div>
                     <div className="text-xs text-muted-foreground">{trend.repairs} réparations</div>
                   </div>
                 </div>
@@ -354,14 +356,14 @@ ${reportData.monthlyTrends.map(trend =>
                       </div>
                     </td>
                     <td className="text-right py-3 px-4 font-bold text-green-600">
-                      {perf.revenue.toFixed(2)}€
+                      {formatCurrency(perf.revenue, settings.currency)}
                     </td>
                     <td className="text-right py-3 px-4">
                       {perf.repairs}
                     </td>
                     <td className="text-right py-3 px-4">
                       <span className="text-sm text-muted-foreground">
-                        {perf.efficiency.toFixed(1)}€/h
+                        {perf.efficiency.toFixed(1)}{settings.currency.symbol}/h
                       </span>
                     </td>
                   </tr>

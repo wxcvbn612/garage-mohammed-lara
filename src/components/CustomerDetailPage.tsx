@@ -21,6 +21,7 @@ import {
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '@github/spark/hooks';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface CustomerDetailPageProps {
   customer: Customer;
@@ -28,6 +29,7 @@ interface CustomerDetailPageProps {
 }
 
 export default function CustomerDetailPage({ customer, onBack }: CustomerDetailPageProps) {
+  const settings = useAppSettings();
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [invoices] = useKV<Invoice[]>('invoices', []);
   const [payments] = useKV<Payment[]>('payments', []);
@@ -149,7 +151,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Total facturé</p>
-                    <p className="text-2xl font-bold">{totalInvoices.toFixed(2)}€</p>
+                    <p className="text-2xl font-bold">{formatCurrency(totalInvoices, settings.currency)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -163,7 +165,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Total payé</p>
-                    <p className="text-2xl font-bold">{totalPaid.toFixed(2)}€</p>
+                    <p className="text-2xl font-bold">{formatCurrency(totalPaid, settings.currency)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -181,7 +183,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                   <div>
                     <p className="text-sm text-muted-foreground">Impayé</p>
                     <p className={`text-2xl font-bold ${unpaidAmount > 0 ? 'text-destructive' : 'text-accent'}`}>
-                      {unpaidAmount.toFixed(2)}€
+                      {formatCurrency(unpaidAmount, settings.currency)}
                     </p>
                   </div>
                 </div>
@@ -328,7 +330,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-2xl font-bold">{invoice.totalAmount.toFixed(2)}€</p>
+                        <p className="text-2xl font-bold">{formatCurrency(invoice.totalAmount, settings.currency)}</p>
                         {getPaymentStatusBadge(invoice)}
                       </div>
                       <Button variant="outline">
@@ -367,7 +369,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-accent">{payment.amount.toFixed(2)}€</p>
+                      <p className="text-2xl font-bold text-accent">{formatCurrency(payment.amount, settings.currency)}</p>
                       {payment.invoiceId && (
                         <p className="text-sm text-muted-foreground">
                           Facture #{customerInvoices.find(i => i.id === payment.invoiceId)?.invoiceNumber}
@@ -409,7 +411,7 @@ export default function CustomerDetailPage({ customer, onBack }: CustomerDetailP
                       </div>
                       <div className="flex items-center gap-6">
                         <div className="text-right">
-                          <p className="text-2xl font-bold">{(repair.actualCost || repair.estimatedCost).toFixed(2)}€</p>
+                          <p className="text-2xl font-bold">{formatCurrency((repair.actualCost || repair.estimatedCost), settings.currency)}</p>
                           {getRepairStatusBadge(repair.status)}
                         </div>
                         <Button variant="outline">

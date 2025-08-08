@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import { useAppSettings } from '../hooks/useAppSettings';
 
 interface Repair {
   id: string;
@@ -30,6 +31,7 @@ interface AddRepairDialogProps {
 }
 
 const AddRepairDialog = ({ open, onOpenChange, onAdd }: AddRepairDialogProps) => {
+  const settings = useAppSettings();
   const [formData, setFormData] = useState({
     vehicleModel: '',
     plateNumber: '',
@@ -137,7 +139,7 @@ const AddRepairDialog = ({ open, onOpenChange, onAdd }: AddRepairDialogProps) =>
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="estimatedCost">Coût estimé (€)</Label>
+              <Label htmlFor="estimatedCost">Coût estimé ({settings.currency.symbol})</Label>
               <Input
                 id="estimatedCost"
                 type="number"

@@ -61,11 +61,6 @@ export function formatCurrency(amount: number, settings?: AppSettings['currency'
     : `${formattedAmount} ${settings.symbol}`;
 }
 
-export function formatCurrencyWithSettings(amount: number): string {
-  const settings = useAppSettings();
-  return formatCurrency(amount, settings.currency);
-}
-
 export function calculateTax(amount: number, settings?: AppSettings['business']): number {
   if (!settings) {
     settings = DEFAULT_SETTINGS.business;

@@ -22,6 +22,7 @@ import {
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '@github/spark/hooks';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface CustomerDetailViewProps {
   customer: Customer | null;
@@ -30,6 +31,7 @@ interface CustomerDetailViewProps {
 }
 
 export default function CustomerDetailView({ customer, isOpen, onOpenChange }: CustomerDetailViewProps) {
+  const settings = useAppSettings();
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [invoices] = useKV<Invoice[]>('invoices', []);
   const [payments] = useKV<Payment[]>('payments', []);
@@ -157,7 +159,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Total facturé</p>
-                          <p className="text-xl font-bold">{totalInvoices.toFixed(2)}€</p>
+                          <p className="text-xl font-bold">{formatCurrency(totalInvoices, settings.currency)}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -171,7 +173,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Total payé</p>
-                          <p className="text-xl font-bold">{totalPaid.toFixed(2)}€</p>
+                          <p className="text-xl font-bold">{formatCurrency(totalPaid, settings.currency)}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -189,7 +191,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                         <div>
                           <p className="text-sm text-muted-foreground">Impayé</p>
                           <p className={`text-xl font-bold ${unpaidAmount > 0 ? 'text-destructive' : 'text-accent'}`}>
-                            {unpaidAmount.toFixed(2)}€
+                            {formatCurrency(unpaidAmount, settings.currency)}
                           </p>
                         </div>
                       </div>
@@ -313,7 +315,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="text-right">
-                              <p className="font-bold">{invoice.total.toFixed(2)}€</p>
+                              <p className="font-bold">{formatCurrency(invoice.total, settings.currency)}</p>
                               {getPaymentStatusBadge(invoice)}
                             </div>
                             <Button size="sm" variant="outline">
@@ -348,7 +350,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-accent">{payment.amount.toFixed(2)}€</p>
+                            <p className="font-bold text-accent">{formatCurrency(payment.amount, settings.currency)}</p>
                             {payment.invoiceId && (
                               <p className="text-xs text-muted-foreground">
                                 Facture #{customerInvoices.find(i => i.id === payment.invoiceId)?.number}
@@ -388,7 +390,7 @@ export default function CustomerDetailView({ customer, isOpen, onOpenChange }: C
                             </div>
                             <div className="flex items-center gap-4">
                               <div className="text-right">
-                                <p className="font-bold">{repair.cost.toFixed(2)}€</p>
+                                <p className="font-bold">{formatCurrency(repair.cost, settings.currency)}</p>
                                 {getRepairStatusBadge(repair.status)}
                               </div>
                               <Button size="sm" variant="outline">
