@@ -21,7 +21,7 @@ import {
 } from '@phosphor-icons/react';
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '../hooks/useKV';
-import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 import { useVehicles } from '../hooks/useDatabase';
 
 interface CustomerDetailPageProps {

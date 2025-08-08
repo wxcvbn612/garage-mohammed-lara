@@ -24,7 +24,7 @@ import {
 import { Vehicle, Customer, Repair, Invoice, VehiclePhoto, Appointment, Payment } from '@/entities';
 import VehiclePhotoGallery from './VehiclePhotoGallery';
 import { useState } from 'react';
-import { useAppGear, formatCurrency } from '../hooks/useAppSettings';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface VehicleDetailViewProps {
   vehicle: Vehicle;

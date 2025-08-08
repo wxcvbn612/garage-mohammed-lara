@@ -70,7 +70,7 @@ export function useDatabaseStats() {
 // Hook for managing customers with full CRUD operations
 export function useCustomers() {
   const [customers, setCustomers] = useKV('customers', []);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState<string | null>(null);
 
   console.log('useCustomers hook - customers from useKV:', customers, 'type:', typeof customers, 'isArray:', Array.isArray(customers));
@@ -79,13 +79,16 @@ export function useCustomers() {
     try {
       setLoading(true);
       setError(null);
+      console.log('Refreshing customers from database...');
       const allCustomers = await DatabaseService.getCustomers();
+      console.log('Retrieved customers from database:', allCustomers);
       // Convert numeric IDs to string IDs to match the frontend expectations
       const customersWithStringIds = allCustomers.map(customer => ({
         ...customer,
         id: customer.id?.toString() || Date.now().toString()
       }));
       setCustomers(customersWithStringIds);
+      console.log('Updated customers state with:', customersWithStringIds);
     } catch (err) {
       setError('Erreur lors du chargement des clients');
       console.error('Failed to load customers:', err);
@@ -93,6 +96,11 @@ export function useCustomers() {
       setLoading(false);
     }
   };
+
+  // Auto-refresh on first load
+  useEffect(() => {
+    refreshCustomers();
+  }, []);
 
   const createCustomer = async (customerData: any) => {
     try {
@@ -194,14 +202,16 @@ export function useCustomers() {
 // Hook for managing vehicles with full CRUD operations
 export function useVehicles() {
   const [vehicles, setVehicles] = useKV('vehicles', []);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState<string | null>(null);
 
   const refreshVehicles = async () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('Refreshing vehicles from database...');
       const allVehicles = await DatabaseService.getVehicles();
+      console.log('Retrieved vehicles from database:', allVehicles);
       // Convert numeric IDs to string IDs to match the frontend expectations
       const vehiclesWithStringIds = allVehicles.map(vehicle => ({
         ...vehicle,
@@ -209,6 +219,7 @@ export function useVehicles() {
         customerId: vehicle.customerId?.toString() || ''
       }));
       setVehicles(vehiclesWithStringIds);
+      console.log('Updated vehicles state with:', vehiclesWithStringIds);
     } catch (err) {
       setError('Erreur lors du chargement des véhicules');
       console.error('Failed to load vehicles:', err);
@@ -216,6 +227,11 @@ export function useVehicles() {
       setLoading(false);
     }
   };
+
+  // Auto-refresh on first load
+  useEffect(() => {
+    refreshVehicles();
+  }, []);
 
   const createVehicle = async (vehicleData: any) => {
     try {
@@ -279,9 +295,9 @@ export function useVehicles() {
       throw err;
     } finally {
       setLoading(false);
-    error,
-    createVehicle,
-    updateVehicle,
+    }
+  };
+
   return {
     vehicles: Array.isArray(vehicles) ? vehicles : [],
     loading,

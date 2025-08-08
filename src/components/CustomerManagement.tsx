@@ -48,9 +48,10 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
 
   // Rafraîchir les données au chargement du composant
   useEffect(() => {
+    console.log('CustomerManagement: Refreshing data on mount');
     refreshCustomers();
     refreshVehicles();
-  }, [refreshCustomers, refreshVehicles]);
+  }, []);
 
   // Formulaire client
   const [customerForm, setCustomerForm] = useState({
@@ -256,7 +257,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   }
 
   // Gérer l'état de chargement
-  if (loading && (!customers || customers.length === 0)) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -299,83 +300,74 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
         </div>
       </div>
 
-      {/* Indicateur de chargement */}
-      {loading && (
-        <div className="flex justify-center py-8">
-          <div className="text-muted-foreground">Chargement...</div>
-        </div>
-      )}
-
       {/* Liste des clients */}
-      {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredCustomers.map((customer) => (
-            <Card key={customer.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  {customer.firstName} {customer.lastName}
-                </CardTitle>
-                <div className="flex items-center gap-1">
-                  <Button size="sm" variant="ghost" onClick={() => handleViewCustomer(customer)}>
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  {canUpdateCustomer && (
-                    <Button size="sm" variant="ghost" onClick={() => handleEditClick(customer)} title="Modifier">
-                      <PencilSimple className="w-4 h-4" />
-                    </Button>
-                  )}
-                  {canDeleteCustomer && (
-                    <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
-                      <Trash className="w-4 h-4 text-destructive" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Envelope className="w-4 h-4" />
-                  {customer.email}
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Phone className="w-4 h-4" />
-                  {customer.phone}
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  {customer.city}
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary">
-                  {getCustomerVehicles(customer.id).length} véhicule(s)
-                </Badge>
-                <span className="text-xs text-muted-foreground">
-                  Client depuis {new Date(customer.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="pt-3 border-t">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => handleViewCustomer(customer)}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Voir détails
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredCustomers.map((customer) => (
+          <Card key={customer.id} className="hover:shadow-md transition-shadow">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <User className="w-5 h-5 text-primary" />
+                {customer.firstName} {customer.lastName}
+              </CardTitle>
+              <div className="flex items-center gap-1">
+                <Button size="sm" variant="ghost" onClick={() => handleViewCustomer(customer)}>
+                  <Eye className="w-4 h-4" />
                 </Button>
+                {canUpdateCustomer && (
+                  <Button size="sm" variant="ghost" onClick={() => handleEditClick(customer)} title="Modifier">
+                    <PencilSimple className="w-4 h-4" />
+                  </Button>
+                )}
+                {canDeleteCustomer && (
+                  <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
+                    <Trash className="w-4 h-4 text-destructive" />
+                  </Button>
+                )}
               </div>
-            </CardContent>
-          </Card>
-            ))}
-        </div>
-      )}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Envelope className="w-4 h-4" />
+                {customer.email}
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Phone className="w-4 h-4" />
+                {customer.phone}
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                {customer.city}
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <Badge variant="secondary">
+                {getCustomerVehicles(customer.id).length} véhicule(s)
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                Client depuis {new Date(customer.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+            <div className="pt-3 border-t">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => handleViewCustomer(customer)}
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Voir détails
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+          ))}
+      </div>
 
       {/* Message si aucun client */}
-      {!loading && filteredCustomers.length === 0 && (
+      {filteredCustomers.length === 0 && (
         <div className="text-center py-12">
           <User className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-medium text-foreground mb-2">
@@ -394,23 +386,6 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
             </Button>
           )}
         </div>
-      )}
-
-      {filteredCustomers.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-12">
-            <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">
-              Aucun client trouvé
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {searchTerm 
-                ? 'Aucun client ne correspond à vos critères de recherche.'
-                : 'Commencez par ajouter un client.'
-              }
-            </p>
-          </CardContent>
-        </Card>
       )}
 
       {/* Dialog pour ajouter un client */}

@@ -337,7 +337,14 @@ export class DatabaseService {
 
   // Entity operations
   static async getCustomers(): Promise<Customer[]> {
-    return db.customers.orderBy('createdAt').reverse().toArray() as Promise<Customer[]>;
+    try {
+      const customers = await db.customers.orderBy('createdAt').reverse().toArray();
+      console.log('DatabaseService.getCustomers() returning:', customers);
+      return customers as Customer[];
+    } catch (error) {
+      console.error('Error in DatabaseService.getCustomers():', error);
+      return [];
+    }
   }
 
   static async getCustomer(id: number): Promise<Customer | undefined> {
@@ -358,7 +365,14 @@ export class DatabaseService {
   }
 
   static async getVehicles(): Promise<Vehicle[]> {
-    return db.vehicles.orderBy('createdAt').reverse().toArray() as Promise<Vehicle[]>;
+    try {
+      const vehicles = await db.vehicles.orderBy('createdAt').reverse().toArray();
+      console.log('DatabaseService.getVehicles() returning:', vehicles);
+      return vehicles as Vehicle[];
+    } catch (error) {
+      console.error('Error in DatabaseService.getVehicles():', error);
+      return [];
+    }
   }
 
   static async getVehiclesByCustomer(customerId: number): Promise<Vehicle[]> {
