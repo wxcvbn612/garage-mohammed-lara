@@ -1,43 +1,7 @@
-import { useState, useEffect } from 'react';
+import { DatabaseService } from './database';
 
-// Mock implementation of Spark hooks for production deployment
-// In production, data is stored in localStorage instead of Spark KV
-
-export function useKV<T>(key: string, defaultValue: T): [T, (value: T | ((prev: T) => T)) => void, () => void] {
-  const [value, setValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return defaultValue;
-    
-    try {
-      const stored = localStorage.getItem(`spark_kv_${key}`);
-      return stored ? JSON.parse(stored) : defaultValue;
-    } catch {
-      return defaultValue;
-    }
-  });
-
-  const updateValue = (newValue: T | ((prev: T) => T)) => {
-    setValue(prev => {
-      const next = typeof newValue === 'function' ? (newValue as (prev: T) => T)(prev) : newValue;
-      try {
-        localStorage.setItem(`spark_kv_${key}`, JSON.stringify(next));
-      } catch (error) {
-        console.warn('Failed to save to localStorage:', error);
-      }
-      return next;
-    });
-  };
-
-  const deleteValue = () => {
-    setValue(defaultValue);
-    try {
-      localStorage.removeItem(`spark_kv_${key}`);
-    } catch (error) {
-      console.warn('Failed to delete from localStorage:', error);
-    }
-  };
-
-  return [value, updateValue, deleteValue];
-}
+// Re-export the enhanced useKV hook from database hooks
+export { useKV, useDatabaseMigration } from '../hooks/useDatabase';
 
 // Mock Spark global object for production
 if (typeof window !== 'undefined' && !window.spark) {
@@ -65,43 +29,19 @@ if (typeof window !== 'undefined' && !window.spark) {
     
     kv: {
       keys: async () => {
-        try {
-          const keys = [];
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key?.startsWith('spark_kv_')) {
-              keys.push(key.replace('spark_kv_', ''));
-            }
-          }
-          return keys;
-        } catch {
-          return [];
-        }
+        return DatabaseService.getAllKeys();
       },
       
       get: async <T>(key: string): Promise<T | undefined> => {
-        try {
-          const stored = localStorage.getItem(`spark_kv_${key}`);
-          return stored ? JSON.parse(stored) : undefined;
-        } catch {
-          return undefined;
-        }
+        return DatabaseService.getKV<T>(key);
       },
       
       set: async <T>(key: string, value: T): Promise<void> => {
-        try {
-          localStorage.setItem(`spark_kv_${key}`, JSON.stringify(value));
-        } catch (error) {
-          console.warn('Failed to save to localStorage:', error);
-        }
+        return DatabaseService.setKV(key, value);
       },
       
       delete: async (key: string): Promise<void> => {
-        try {
-          localStorage.removeItem(`spark_kv_${key}`);
-        } catch (error) {
-          console.warn('Failed to delete from localStorage:', error);
-        }
+        return DatabaseService.deleteKV(key);
       }
     }
   };

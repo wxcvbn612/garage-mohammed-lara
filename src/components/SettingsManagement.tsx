@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Settings, 
   Globe, 
@@ -14,9 +15,11 @@ import {
   Save, 
   RotateCcw,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Database
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
+import DatabaseManagement from './DatabaseManagement';
 
 interface AppSettings {
   currency: {
@@ -186,18 +189,35 @@ export default function SettingsManagement() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Paramètres de devise */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-primary" />
-              Devise
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="currency">Devise principale</Label>
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="general" className="flex items-center gap-2">
+            <Settings className="w-4 h-4" />
+            Général
+          </TabsTrigger>
+          <TabsTrigger value="business" className="flex items-center gap-2">
+            <Globe className="w-4 h-4" />
+            Entreprise
+          </TabsTrigger>
+          <TabsTrigger value="database" className="flex items-center gap-2">
+            <Database className="w-4 h-4" />
+            Base de Données
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="general" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Paramètres de devise */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="w-5 h-5 text-primary" />
+                  Devise
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currency">Devise principale</Label>
               <Select
                 value={settings.currency.code}
                 onValueChange={updateCurrency}
@@ -289,120 +309,130 @@ export default function SettingsManagement() {
             </div>
           </CardContent>
         </Card>
+          </div>
+        </TabsContent>
 
-        {/* Paramètres commerciaux */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="w-5 h-5 text-primary" />
-              Paramètres commerciaux
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="tax-rate">Taux de TVA (%)</Label>
-              <Input
-                id="tax-rate"
-                type="number"
-                min="0"
-                max="100"
-                step="0.1"
-                value={settings.business.taxRate}
-                onChange={(e) => updateSettings('business', 'taxRate', parseFloat(e.target.value) || 0)}
-                placeholder="20"
-              />
-            </div>
+        <TabsContent value="business" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Paramètres commerciaux */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-primary" />
+                  Paramètres commerciaux
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="tax-rate">Taux de TVA (%)</Label>
+                  <Input
+                    id="tax-rate"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={settings.business.taxRate}
+                    onChange={(e) => updateSettings('business', 'taxRate', parseFloat(e.target.value) || 0)}
+                    placeholder="20"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="language">Langue</Label>
-              <Select
-                value={settings.business.language}
-                onValueChange={(value) => updateSettings('business', 'language', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {LANGUAGES.map((language) => (
-                    <SelectItem key={language.code} value={language.code}>
-                      {language.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="language">Langue</Label>
+                  <Select
+                    value={settings.business.language}
+                    onValueChange={(value) => updateSettings('business', 'language', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LANGUAGES.map((language) => (
+                        <SelectItem key={language.code} value={language.code}>
+                          {language.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Fuseau horaire</Label>
-              <Select
-                value={settings.business.timezone}
-                onValueChange={(value) => updateSettings('business', 'timezone', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {TIMEZONES.map((timezone) => (
-                    <SelectItem key={timezone.code} value={timezone.code}>
-                      {timezone.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+                <div className="space-y-2">
+                  <Label htmlFor="timezone">Fuseau horaire</Label>
+                  <Select
+                    value={settings.business.timezone}
+                    onValueChange={(value) => updateSettings('business', 'timezone', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TIMEZONES.map((timezone) => (
+                        <SelectItem key={timezone.code} value={timezone.code}>
+                          {timezone.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Statut de configuration */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-accent" />
-              Statut de la configuration
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Devise configurée</span>
-                <Badge variant="default" className="bg-accent">
-                  {settings.currency.code}
-                </Badge>
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Informations du garage</span>
-                <Badge variant={settings.garage.name && settings.garage.address ? "default" : "secondary"}>
-                  {settings.garage.name && settings.garage.address ? 'Complètes' : 'Incomplètes'}
-                </Badge>
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Paramètres commerciaux</span>
-                <Badge variant="default" className="bg-accent">
-                  Configurés
-                </Badge>
-              </div>
-            </div>
-
-            <div className="p-3 bg-accent/10 rounded-lg border border-accent/20">
-              <div className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-accent mt-0.5" />
-                <div className="text-sm">
-                  <div className="font-medium text-accent-foreground">Configuration active</div>
-                  <div className="text-muted-foreground">
-                    Vos paramètres sont appliqués dans toute l'application
+            {/* Statut de configuration */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  Statut de la configuration
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Devise configurée</span>
+                    <Badge variant="default" className="bg-accent">
+                      {settings.currency.code}
+                    </Badge>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Informations du garage</span>
+                    <Badge variant={settings.garage.name && settings.garage.address ? "default" : "secondary"}>
+                      {settings.garage.name && settings.garage.address ? 'Complètes' : 'Incomplètes'}
+                    </Badge>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Paramètres commerciaux</span>
+                    <Badge variant="default" className="bg-accent">
+                      Configurés
+                    </Badge>
                   </div>
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
+                <div className="p-3 bg-accent/10 rounded-lg border border-accent/20">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-accent mt-0.5" />
+                    <div className="text-sm">
+                      <div className="font-medium text-accent-foreground">Configuration active</div>
+                      <div className="text-muted-foreground">
+                        Vos paramètres sont appliqués dans toute l'application
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="database" className="space-y-6">
+          <DatabaseManagement />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -38,7 +38,8 @@ import LoginForm from './components/LoginForm';
 import AuthDebugPanel from './components/AuthDebugPanel';
 import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
-import { useDatabaseMigration } from './hooks/useDatabaseMigration';
+import { useDatabaseMigration } from './hooks/useDatabase';
+import './utils/databaseTester'; // Import testeur pour développement
 
 interface DashboardStats {
   totalRepairs: number;
@@ -53,7 +54,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const settings = useAppSettings();
   const { authState, login, logout, hasPermission, resetAuthState } = useAuth();
-  const { isMigrating, migrationComplete } = useDatabaseMigration();
+  const { isInitializing, migrationComplete } = useDatabaseMigration();
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -64,13 +65,13 @@ function App() {
   });
 
   // Show initialization screen if initializing
-  if (isMigrating) {
+  if (isInitializing) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-foreground mb-2">Initialisation de l'application...</h2>
-          <p className="text-muted-foreground">Configuration de l'utilisateur administrateur</p>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Initialisation de la base de données...</h2>
+          <p className="text-muted-foreground">Migration des données vers IndexedDB</p>
         </div>
       </div>
     );
