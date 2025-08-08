@@ -22,6 +22,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const [vehicles] = useKV<Vehicle[]>('vehicles', []);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
+  const [isEditCustomerOpen, setIsEditCustomerOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,43 +39,60 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     notes: ''
   });
 
+  const validateCustomerForm = () => {
+    if (!customerForm.firstName.trim()) {
+      toast.error('Le prénom est requis');
+      return false;
+    }
+    if (!customerForm.lastName.trim()) {
+      toast.error('Le nom est requis');
+      return false;
+    }
+    if (!customerForm.email.trim()) {
+      toast.error('L\'email est requis');
+      return false;
+    }
+    // Validation de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(customerForm.email)) {
+      toast.error('L\'adresse email n\'est pas valide');
+      return false;
+    }
+    if (!customerForm.phone.trim()) {
+      toast.error('Le téléphone est requis');
+      return false;
+    }
+    if (!customerForm.address.trim()) {
+      toast.error('L\'adresse est requise');
+      return false;
+    }
+    if (!customerForm.city.trim()) {
+      toast.error('La ville est requise');
+      return false;
+    }
+    return true;
+  };
+
+  const resetForm = () => {
+    setCustomerForm({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      notes: ''
+    });
+  };
+
   const handleAddCustomer = async () => {
     if (isSubmitting) return;
     
     try {
       setIsSubmitting(true);
       
-      // Validation côté client
-      if (!customerForm.firstName.trim()) {
-        toast.error('Le prénom est requis');
-        return;
-      }
-      if (!customerForm.lastName.trim()) {
-        toast.error('Le nom est requis');
-        return;
-      }
-      if (!customerForm.email.trim()) {
-        toast.error('L\'email est requis');
-        return;
-      }
-      // Validation de l'email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(customerForm.email)) {
-        toast.error('L\'adresse email n\'est pas valide');
-        return;
-      }
-      if (!customerForm.phone.trim()) {
-        toast.error('Le téléphone est requis');
-        return;
-      }
-      if (!customerForm.address.trim()) {
-        toast.error('L\'adresse est requise');
-        return;
-      }
-      if (!customerForm.city.trim()) {
-        toast.error('La ville est requise');
-        return;
-      }
+      if (!validateCustomerForm()) return;
 
       const newCustomer: Customer = {
         id: Date.now().toString(),
@@ -84,21 +102,39 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       };
       
       setCustomers(prev => [...prev, newCustomer]);
-      setCustomerForm({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        postalCode: '',
-        notes: ''
-      });
+      resetForm();
       setIsAddCustomerOpen(false);
       toast.success('Client ajouté avec succès');
     } catch (error) {
       console.error('Erreur lors de l\'ajout du client:', error);
       toast.error(`Erreur lors de l'ajout du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditCustomer = async () => {
+    if (isSubmitting || !selectedCustomer) return;
+    
+    try {
+      setIsSubmitting(true);
+      
+      if (!validateCustomerForm()) return;
+
+      const updatedCustomer: Customer = {
+        ...selectedCustomer,
+        ...customerForm,
+        updatedAt: new Date()
+      };
+      
+      setCustomers(prev => prev.map(c => c.id === selectedCustomer.id ? updatedCustomer : c));
+      resetForm();
+      setIsEditCustomerOpen(false);
+      setSelectedCustomer(null);
+      toast.success('Client modifié avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la modification du client:', error);
+      toast.error(`Erreur lors de la modification du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -124,7 +160,20 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     setViewMode('list');
   };
 
-  const handleDeleteCustomer = async (customerId: string) => {
+  const handleEditClick = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setCustomerForm({
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      email: customer.email,
+      phone: customer.phone,
+      address: customer.address,
+      city: customer.city,
+      postalCode: customer.postalCode || '',
+      notes: customer.notes || ''
+    });
+    setIsEditCustomerOpen(true);
+  };
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
       try {
         setCustomers(prev => prev.filter(c => c.id !== customerId));
@@ -180,7 +229,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
                   <Button size="sm" variant="ghost" onClick={() => handleViewCustomer(customer)}>
                     <Eye className="w-4 h-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setSelectedCustomer(customer)} title="Modifier">
+                  <Button size="sm" variant="ghost" onClick={() => handleEditClick(customer)} title="Modifier">
                     <PencilSimple className="w-4 h-4" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => handleDeleteCustomer(customer.id)} title="Supprimer">
@@ -330,6 +379,96 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
             </Button>
             <Button onClick={handleAddCustomer} disabled={isSubmitting}>
               {isSubmitting ? 'Ajout en cours...' : 'Ajouter'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog pour modifier un client */}
+      <Dialog open={isEditCustomerOpen} onOpenChange={setIsEditCustomerOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Modifier Client</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-firstName">Prénom *</Label>
+              <Input
+                id="edit-firstName"
+                required
+                value={customerForm.firstName}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, firstName: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-lastName">Nom *</Label>
+              <Input
+                id="edit-lastName"
+                required
+                value={customerForm.lastName}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, lastName: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-email">Email *</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                required
+                value={customerForm.email}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, email: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-phone">Téléphone *</Label>
+              <Input
+                id="edit-phone"
+                required
+                value={customerForm.phone}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, phone: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2 col-span-2">
+              <Label htmlFor="edit-address">Adresse *</Label>
+              <Input
+                id="edit-address"
+                required
+                value={customerForm.address}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, address: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-city">Ville *</Label>
+              <Input
+                id="edit-city"
+                required
+                value={customerForm.city}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, city: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-postalCode">Code Postal</Label>
+              <Input
+                id="edit-postalCode"
+                value={customerForm.postalCode}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, postalCode: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2 col-span-2">
+              <Label htmlFor="edit-notes">Notes</Label>
+              <Textarea
+                id="edit-notes"
+                value={customerForm.notes}
+                onChange={(e) => setCustomerForm(prev => ({ ...prev, notes: e.target.value }))}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setIsEditCustomerOpen(false)} disabled={isSubmitting}>
+              Annuler
+            </Button>
+            <Button onClick={handleEditCustomer} disabled={isSubmitting}>
+              {isSubmitting ? 'Modification en cours...' : 'Modifier'}
             </Button>
           </div>
         </DialogContent>
