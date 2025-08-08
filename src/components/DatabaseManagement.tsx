@@ -8,13 +8,13 @@ import {
   Database, 
   Download, 
   Upload, 
-  ArrowClockwise as ArrowClockwise as RefreshCw, 
+  ArrowClockwise as RefreshCw, 
   HardDrive,
   Users,
   Car,
   Wrench,
   Calendar,
-  FileText,
+  File as FileText,
   Warning,
   CheckCircle,
   Info
@@ -171,7 +171,7 @@ export default function DatabaseManagement() {
     { label: 'Véhicules', count: stats.vehicles, icon: Car, color: 'text-green-600' },
     { label: 'Réparations', count: stats.repairs, icon: Wrench, color: 'text-orange-600' },
     { label: 'Rendez-vous', count: stats.appointments, icon: Calendar, color: 'text-purple-600' },
-    { label: 'Factures', count: stats.invoices, icon: FileText, color: 'text-red-600' }
+    { label: 'Factures', count: stats.invoices, icon: File as FileText, color: 'text-red-600' }
   ];
 
   return (

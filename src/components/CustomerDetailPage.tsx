@@ -11,7 +11,7 @@ import {
   Car, 
   CurrencyEur, 
   Calendar,
-  FileText,
+  File as FileText,
   CreditCard,
   ArrowLeft,
   Gear,

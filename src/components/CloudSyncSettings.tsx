@@ -14,11 +14,11 @@ import {
   Download, 
   Upload, 
   ArrowClockwise as RefreshCw, 
-  History,
+  ClockCounterClockwise as History,
   WarningCircle,
   CheckCircle,
   Clock,
-  Server,
+  Desktop as Server,
   Database,
   FileText
 } from '@phosphor-icons/react';

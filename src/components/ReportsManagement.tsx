@@ -6,7 +6,7 @@ import {
   TrendUp, 
   CurrencyEur, 
   Calendar, 
-  FileText,
+  File as FileText,
   Download,
   ChartBar,
   ChartPie,

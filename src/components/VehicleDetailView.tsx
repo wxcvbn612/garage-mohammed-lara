@@ -11,7 +11,7 @@ import {
   Wrench,
   CurrencyEur,
   Camera,
-  FileText,
+  File as FileText,
   Clock,
   Gear,
   TrendUp,

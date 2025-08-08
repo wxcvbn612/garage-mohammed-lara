@@ -12,7 +12,7 @@ import {
   Plus, 
   MagnifyingGlass, 
   CurrencyEur, 
-  FileText,
+  File as FileText,
   PaperPlaneTilt,
   Eye,
   Download,
