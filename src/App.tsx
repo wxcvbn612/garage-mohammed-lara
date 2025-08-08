@@ -63,14 +63,14 @@ function App() {
     unpaidInvoices: 0
   });
 
-  // Show migration screen if migrating
+  // Show initialization screen if initializing
   if (isMigrating) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-foreground mb-2">Migration des données en cours...</h2>
-          <p className="text-muted-foreground">Mise à jour vers le nouveau système de base de données</p>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Initialisation de l'application...</h2>
+          <p className="text-muted-foreground">Configuration de l'utilisateur administrateur</p>
         </div>
       </div>
     );
