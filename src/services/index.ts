@@ -1,6 +1,18 @@
 import EntityManager, { ValidationRule } from '../services/EntityManager';
 import { Customer, Vehicle, Repair, Part, Appointment, Invoice, Mechanic, Supplier, Payment } from '../entities';
 
+// Export des nouveaux services de base de données
+export { default as EntityManager } from './EntityManager';
+export { default as DatabaseService } from './DatabaseService';
+export { 
+  BaseRepository, 
+  CustomerRepository, 
+  VehicleRepository, 
+  RepairRepository, 
+  UserRepository, 
+  RepositoryFactory 
+} from './RepositoryService';
+
 /**
  * Services métier inspirés des services Symfony
  * Encapsulent la logique métier et les interactions avec les entités

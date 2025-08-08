@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, User, Phone, Mail, MapPin, PencilSimple, Trash, Search, Eye, ArrowLeft, Shield } from '@phosphor-icons/react';
 import { Customer, Vehicle } from '@/entities';
 import { toast } from 'sonner';
-import { useKV } from '@github/spark/hooks';
 import { useAuth } from '../hooks/useAuth';
+import { useCustomers, useVehicles } from '../hooks/useDatabase';
 import CustomerDetailPage from './CustomerDetailPage';
 
 interface CustomerManagementProps {
@@ -19,8 +19,17 @@ interface CustomerManagementProps {
 }
 
 export default function CustomerManagement({ isOpen, onOpenChange }: CustomerManagementProps) {
-  const [customers, setCustomers] = useKV<Customer[]>('customers', []);
-  const [vehicles] = useKV<Vehicle[]>('vehicles', []);
+  const { 
+    customers, 
+    loading, 
+    error, 
+    createCustomer, 
+    updateCustomer, 
+    deleteCustomer, 
+    searchCustomers,
+    getCustomerWithVehicles 
+  } = useCustomers();
+  const { vehicles } = useVehicles();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
   const [isEditCustomerOpen, setIsEditCustomerOpen] = useState(false);
@@ -96,19 +105,17 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       
       if (!validateCustomerForm()) return;
 
-      const newCustomer: Customer = {
-        id: Date.now().toString(),
-        ...customerForm,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      
-      setCustomers(prev => [...prev, newCustomer]);
+      await createCustomer(customerForm);
       resetForm();
       setIsAddCustomerOpen(false);
       toast.success('Client ajouté avec succès');
     } catch (error) {
       console.error('Erreur lors de l\'ajout du client:', error);
+      toast.error('Erreur lors de l\'ajout du client');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
       toast.error(`Erreur lors de l'ajout du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     } finally {
       setIsSubmitting(false);
@@ -123,13 +130,7 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
       
       if (!validateCustomerForm()) return;
 
-      const updatedCustomer: Customer = {
-        ...selectedCustomer,
-        ...customerForm,
-        updatedAt: new Date()
-      };
-      
-      setCustomers(prev => prev.map(c => c.id === selectedCustomer.id ? updatedCustomer : c));
+      await updateCustomer(selectedCustomer.id, customerForm);
       resetForm();
       setIsEditCustomerOpen(false);
       setSelectedCustomer(null);
@@ -177,13 +178,25 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
     setIsEditCustomerOpen(true);
   };
 
-  const handleDeleteCustomer = (customerId: string) => {
+  const handleDeleteCustomer = async (customerId: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
       try {
-        setCustomers(prev => prev.filter(c => c.id !== customerId));
+        await deleteCustomer(customerId);
         toast.success('Client supprimé avec succès');
       } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
         toast.error('Erreur lors de la suppression');
+      }
+    }
+  };
+
+  const handleSearch = async () => {
+    if (searchTerm.trim()) {
+      try {
+        await searchCustomers(searchTerm);
+      } catch (error) {
+        console.error('Erreur lors de la recherche:', error);
+        toast.error('Erreur lors de la recherche');
       }
     }
   };
@@ -217,6 +230,19 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
   const canUpdateCustomer = hasPermission('customers.update');
   const canDeleteCustomer = hasPermission('customers.delete');
 
+  // Gérer les erreurs de chargement
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-foreground mb-2">Erreur lors du chargement des données</h3>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Réessayer</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -228,11 +254,20 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
               placeholder="Rechercher un client..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               className="pl-10 w-64"
             />
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={handleSearch}
+              className="absolute right-1 top-1/2 transform -translate-y-1/2"
+            >
+              <Search className="w-4 h-4" />
+            </Button>
           </div>
           {canCreateCustomer && (
-            <Button onClick={() => setIsAddCustomerOpen(true)}>
+            <Button onClick={() => setIsAddCustomerOpen(true)} disabled={loading}>
               <Plus className="w-4 h-4 mr-2" />
               Nouveau Client
             </Button>
@@ -240,10 +275,18 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
         </div>
       </div>
 
+      {/* Indicateur de chargement */}
+      {loading && (
+        <div className="flex justify-center py-8">
+          <div className="text-muted-foreground">Chargement...</div>
+        </div>
+      )}
+
       {/* Liste des clients */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredCustomers.map((customer) => (
-          <Card key={customer.id} className="hover:shadow-md transition-shadow">
+      {!loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCustomers.map((customer) => (
+            <Card key={customer.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -303,8 +346,31 @@ export default function CustomerManagement({ isOpen, onOpenChange }: CustomerMan
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+            ))}
+        </div>
+      )}
+
+      {/* Message si aucun client */}
+      {!loading && filteredCustomers.length === 0 && (
+        <div className="text-center py-12">
+          <User className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">
+            {searchTerm ? 'Aucun client trouvé' : 'Aucun client enregistré'}
+          </h3>
+          <p className="text-muted-foreground mb-4">
+            {searchTerm 
+              ? `Aucun client ne correspond à "${searchTerm}"`
+              : 'Commencez par ajouter votre premier client'
+            }
+          </p>
+          {!searchTerm && canCreateCustomer && (
+            <Button onClick={() => setIsAddCustomerOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter un client
+            </Button>
+          )}
+        </div>
+      )}
 
       {filteredCustomers.length === 0 && (
         <Card>

@@ -38,6 +38,7 @@ import LoginForm from './components/LoginForm';
 import AuthDebugPanel from './components/AuthDebugPanel';
 import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 import { useAuth } from './hooks/useAuth';
+import { useDatabaseMigration } from './hooks/useDatabaseMigration';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -52,6 +53,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const settings = useAppSettings();
   const { authState, login, logout, hasPermission, resetAuthState } = useAuth();
+  const { isMigrating, migrationComplete } = useDatabaseMigration();
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -60,6 +62,19 @@ function App() {
     monthlyRevenue: 0,
     unpaidInvoices: 0
   });
+
+  // Show migration screen if migrating
+  if (isMigrating) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Migration des données en cours...</h2>
+          <p className="text-muted-foreground">Mise à jour vers le nouveau système de base de données</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show login form if not authenticated
   if (!authState.isAuthenticated) {
