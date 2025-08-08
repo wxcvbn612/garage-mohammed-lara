@@ -23,13 +23,7 @@ export function useDatabaseMigration() {
     try {
       setIsMigrating(true);
 
-      // Vérifier si la migration a déjà été effectuée
-      const migrationStatus = await window.spark.kv.get('database_migration_v2_complete');
-      if (migrationStatus) {
-        setMigrationComplete(true);
-        return;
-      }
-
+      // Force re-migration pour corriger les données
       console.log('Début de la migration des données...');
 
       // Migration des clients
@@ -112,7 +106,7 @@ export function useDatabaseMigration() {
       await createTestDataIfNeeded();
 
       // Marquer la migration comme terminée
-      await window.spark.kv.set('database_migration_v2_complete', true);
+      await window.spark.kv.set('database_migration_v3_complete', true);
       setMigrationComplete(true);
 
       console.log('Migration des données terminée avec succès');
@@ -217,55 +211,51 @@ export function useDatabaseMigration() {
       const testVehicles = [
         {
           customerId: createdCustomers[0].id,
-          make: 'Peugeot',
+          brand: 'Peugeot',
           model: '308',
           year: 2018,
           licensePlate: 'A 12345 92',
           vin: 'VF3LCYHZXJS123456',
           color: 'Bleu',
           mileage: 85000,
-          fuelType: 'Essence',
-          transmission: 'Manuelle',
-          photos: []
+          fuelType: 'essence' as const,
+          notes: 'Véhicule en bon état général'
         },
         {
           customerId: createdCustomers[1].id,
-          make: 'Renault',
+          brand: 'Renault',
           model: 'Clio',
           year: 2020,
           licensePlate: 'B 67890 92',
           vin: 'VF1CLJEY0L0234567',
           color: 'Rouge',
           mileage: 45000,
-          fuelType: 'Essence',
-          transmission: 'Automatique',
-          photos: []
+          fuelType: 'essence' as const,
+          notes: 'Véhicule récent, entretenu régulièrement'
         },
         {
           customerId: createdCustomers[1].id,
-          make: 'Dacia',
+          brand: 'Dacia',
           model: 'Duster',
           year: 2019,
           licensePlate: 'C 11111 92',
           vin: 'UU1HSMC20L0345678',
           color: 'Gris',
           mileage: 62000,
-          fuelType: 'Diesel',
-          transmission: 'Manuelle',
-          photos: []
+          fuelType: 'diesel' as const,
+          notes: 'SUV familial, usage fréquent'
         },
         {
           customerId: createdCustomers[2].id,
-          make: 'Toyota',
+          brand: 'Toyota',
           model: 'Corolla',
           year: 2021,
           licensePlate: 'D 22222 92',
           vin: 'JTDEPRAE0LJ456789',
           color: 'Blanc',
           mileage: 25000,
-          fuelType: 'Hybride',
-          transmission: 'Automatique',
-          photos: []
+          fuelType: 'hybride' as const,
+          notes: 'Véhicule hybride, très économique'
         }
       ];
 
@@ -282,17 +272,19 @@ export function useDatabaseMigration() {
           customerId: createdCustomers[0].id,
           title: 'Vidange et révision',
           description: 'Vidange moteur, changement du filtre à huile et vérification générale',
-          status: 'completed',
-          priority: 'medium',
+          status: 'termine' as const,
+          priority: 'normale' as const,
           estimatedCost: 150,
           actualCost: 145,
-          laborHours: 1.5,
+          estimatedDuration: 1.5,
+          actualDuration: 1.5,
           startDate: new Date('2024-01-15'),
           endDate: new Date('2024-01-15'),
           parts: [
-            { name: 'Huile moteur', quantity: 5, unitPrice: 12 },
-            { name: 'Filtre à huile', quantity: 1, unitPrice: 25 }
+            { partId: 'oil-1', quantity: 5, unitPrice: 12, totalPrice: 60 },
+            { partId: 'filter-1', quantity: 1, unitPrice: 25, totalPrice: 25 }
           ],
+          laborCost: 60,
           notes: 'Réparation terminée sans problème'
         },
         {
@@ -300,15 +292,16 @@ export function useDatabaseMigration() {
           customerId: createdCustomers[1].id,
           title: 'Changement plaquettes de frein',
           description: 'Remplacement des plaquettes de frein avant',
-          status: 'in_progress',
-          priority: 'high',
+          status: 'en_cours' as const,
+          priority: 'haute' as const,
           estimatedCost: 200,
           actualCost: 0,
-          laborHours: 2,
+          estimatedDuration: 2,
           startDate: new Date(),
           parts: [
-            { name: 'Plaquettes de frein avant', quantity: 1, unitPrice: 80 }
+            { partId: 'brake-pads-1', quantity: 1, unitPrice: 80, totalPrice: 80 }
           ],
+          laborCost: 120,
           notes: 'En cours de réparation'
         },
         {
@@ -316,12 +309,12 @@ export function useDatabaseMigration() {
           customerId: createdCustomers[1].id,
           title: 'Diagnostic électronique',
           description: 'Contrôle du système électronique suite à voyant moteur',
-          status: 'pending',
-          priority: 'medium',
+          status: 'en_attente' as const,
+          priority: 'normale' as const,
           estimatedCost: 80,
-          actualCost: 0,
-          laborHours: 1,
+          estimatedDuration: 1,
           parts: [],
+          laborCost: 80,
           notes: 'En attente de diagnostic'
         }
       ];

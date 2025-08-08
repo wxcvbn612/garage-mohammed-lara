@@ -22,6 +22,7 @@ import {
 import { Customer, Vehicle, Invoice, Payment, Repair } from '@/entities';
 import { useKV } from '@github/spark/hooks';
 import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
+import { useVehicles } from '../hooks/useDatabase';
 
 interface CustomerDetailPageProps {
   customer: Customer;
@@ -30,7 +31,7 @@ interface CustomerDetailPageProps {
 
 export default function CustomerDetailPage({ customer, onBack }: CustomerDetailPageProps) {
   const settings = useAppSettings();
-  const [vehicles] = useKV<Vehicle[]>('vehicles', []);
+  const { vehicles } = useVehicles();
   const [invoices] = useKV<Invoice[]>('invoices', []);
   const [payments] = useKV<Payment[]>('payments', []);
   const [repairs] = useKV<Repair[]>('repairs', []);
