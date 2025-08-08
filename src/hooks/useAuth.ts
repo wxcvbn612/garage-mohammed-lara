@@ -89,8 +89,12 @@ export function useAuth() {
 
   const [users, setUsers] = useKV<User[]>('users', []);
 
-  // Initialize default admin user if no users exist
+  // Initialize auth state and default admin user
   useEffect(() => {
+    // Reset loading state on mount to prevent stuck loading states
+    setAuthState(current => ({ ...current, loading: false }));
+
+    // Initialize default admin user if no users exist
     if (users.length === 0) {
       const defaultAdmin: User = {
         id: 'admin-1',
@@ -105,13 +109,13 @@ export function useAuth() {
       };
       setUsers([defaultAdmin]);
     }
-  }, [users.length, setUsers]);
+  }, [users.length, setUsers, setAuthState]);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Mettre l'état en loading
-    setAuthState(current => ({ ...current, loading: true }));
-
     try {
+      // Mettre l'état en loading
+      setAuthState(current => ({ ...current, loading: true }));
+
       // Simuler un délai de connexion réaliste
       await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -140,24 +144,22 @@ export function useAuth() {
         return true;
       } else {
         // Échec de connexion
-        setAuthState(current => ({ 
-          ...current, 
-          loading: false,
+        setAuthState({
           isAuthenticated: false,
-          user: null
-        }));
+          user: null,
+          loading: false
+        });
         toast.error('Nom d\'utilisateur ou mot de passe incorrect');
         return false;
       }
     } catch (error) {
       console.error('Erreur lors de la connexion:', error);
       // Échec de connexion avec erreur
-      setAuthState(current => ({ 
-        ...current, 
-        loading: false,
+      setAuthState({
         isAuthenticated: false,
-        user: null
-      }));
+        user: null,
+        loading: false
+      });
       toast.error('Erreur lors de la connexion');
       return false;
     }
