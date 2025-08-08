@@ -27,6 +27,7 @@ import {
   AlertTriangle
 } from '@phosphor-icons/react';
 import { useState, useMemo } from 'react';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface FinancialData {
   month: string;
@@ -47,6 +48,7 @@ const FinancialDashboard = () => {
   const [repairs] = useKV('repairs', []);
   const [stockItems] = useKV('stock-items', []);
   const [timeframe, setTimeframe] = useState('6months');
+  const settings = useAppSettings();
 
   // Mock financial data - in a real app this would be calculated from actual data
   const financialData: FinancialData[] = [
@@ -86,14 +88,14 @@ const FinancialDashboard = () => {
   const kpis = [
     {
       title: 'Chiffre d\'affaires mensuel',
-      value: `${currentMonth.revenue.toLocaleString()}€`,
+      value: formatCurrency(currentMonth.revenue, settings.currency),
       change: revenueGrowth,
       icon: Euro,
       color: 'text-blue-600'
     },
     {
       title: 'Bénéfice mensuel',
-      value: `${currentMonth.profit.toLocaleString()}€`,
+      value: formatCurrency(currentMonth.profit, settings.currency),
       change: profitGrowth,
       icon: TrendingUp,
       color: 'text-green-600'

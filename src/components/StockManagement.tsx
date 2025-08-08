@@ -17,6 +17,7 @@ import {
   Filter
 } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 interface StockItem {
   id: string;
@@ -51,6 +52,7 @@ const StockManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [stockLevelFilter, setStockLevelFilter] = useState<string>('all');
+  const settings = useAppSettings();
 
   const categories = Array.from(new Set(stockItems.map(item => item.category)));
   
@@ -307,9 +309,9 @@ const StockManagement = () => {
                     <TableCell className="text-sm text-muted-foreground">
                       {item.minStock} / {item.maxStock}
                     </TableCell>
-                    <TableCell>{item.unitPrice}€</TableCell>
+                    <TableCell>{formatCurrency(item.unitPrice, settings.currency)}</TableCell>
                     <TableCell className="font-medium">
-                      {(item.currentStock * item.unitPrice).toLocaleString()}€
+                      {formatCurrency(item.currentStock * item.unitPrice, settings.currency)}
                     </TableCell>
                     <TableCell className="text-sm">{item.location}</TableCell>
                     <TableCell>

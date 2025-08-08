@@ -21,6 +21,7 @@ import {
   AlertCircle
 } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { useAppSettings, formatCurrency, calculateTax, calculateTotalWithTax } from '../hooks/useAppSettings';
 
 interface Invoice {
   id: string;
@@ -56,6 +57,7 @@ const InvoiceManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const settings = useAppSettings();
 
   const filteredInvoices = invoices.filter(invoice => {
     const matchesSearch = invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -269,7 +271,7 @@ const InvoiceManagement = () => {
                       {new Date(invoice.dueDate).toLocaleDateString('fr-FR')}
                     </span>
                   </TableCell>
-                  <TableCell className="font-medium">{invoice.total.toLocaleString()}€</TableCell>
+                  <TableCell className="font-medium">{formatCurrency(invoice.total, settings.currency)}</TableCell>
                   <TableCell>
                     <Badge className={`${getStatusColor(invoice.status)} flex items-center gap-1 w-fit`}>
                       {getStatusIcon(invoice.status)}

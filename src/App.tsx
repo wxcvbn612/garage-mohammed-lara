@@ -14,7 +14,8 @@ import {
   Clock,
   AlertTriangle,
   User,
-  ChartBar
+  ChartBar,
+  Settings
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Toaster } from 'sonner';
@@ -29,6 +30,8 @@ import VehicleManagement from './components/VehicleManagement';
 import MechanicManagement from './components/MechanicManagement';
 import ReportsManagement from './components/ReportsManagement';
 import NotificationCenter from './components/NotificationCenter';
+import SettingsManagement from './components/SettingsManagement';
+import { useAppSettings, formatCurrency } from './hooks/useAppSettings';
 
 interface DashboardStats {
   totalRepairs: number;
@@ -41,6 +44,7 @@ interface DashboardStats {
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const settings = useAppSettings();
   const [stats] = useKV<DashboardStats>('dashboard-stats', {
     totalRepairs: 0,
     pendingRepairs: 0,
@@ -60,7 +64,8 @@ function App() {
     { id: 'stock', label: 'Stock', icon: Package },
     { id: 'invoices', label: 'Facturation', icon: Euro },
     { id: 'reports', label: 'Rapports', icon: ChartBar },
-    { id: 'analytics', label: 'Analyses', icon: TrendingUp }
+    { id: 'analytics', label: 'Analyses', icon: TrendingUp },
+    { id: 'settings', label: 'Paramètres', icon: Settings }
   ];
 
   const renderContent = () => {
@@ -83,8 +88,10 @@ function App() {
         return <ReportsManagement />;
       case 'analytics':
         return <FinancialDashboard />;
+      case 'settings':
+        return <SettingsManagement />;
       default:
-        return <DashboardOverview stats={stats} />;
+        return <DashboardOverview stats={stats} settings={settings} />;
     }
   };
 
@@ -98,8 +105,8 @@ function App() {
               <Car className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Garage Mohammed</h1>
-              <p className="text-sm text-muted-foreground">Larache - Gestion Automobile</p>
+              <h1 className="text-xl font-bold text-foreground">{settings.garage.name}</h1>
+              <p className="text-sm text-muted-foreground">{settings.garage.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -145,7 +152,7 @@ function App() {
   );
 }
 
-function DashboardOverview({ stats }: { stats: DashboardStats }) {
+function DashboardOverview({ stats, settings }: { stats: DashboardStats; settings: any }) {
   const dashboardCards = [
     {
       title: 'Réparations en cours',
@@ -171,7 +178,7 @@ function DashboardOverview({ stats }: { stats: DashboardStats }) {
     },
     {
       title: 'Chiffre d\'affaires',
-      value: `${stats.monthlyRevenue}€`,
+      value: formatCurrency(stats.monthlyRevenue, settings.currency),
       icon: Euro,
       color: 'text-accent',
       bgColor: 'bg-accent/10'

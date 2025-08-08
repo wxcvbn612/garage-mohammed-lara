@@ -23,6 +23,7 @@ import {
 import { Repair, Customer, Vehicle, RepairStatus, RepairPriority } from '@/entities';
 import { repairService, customerService, vehicleService } from '@/services';
 import { toast } from 'sonner';
+import { useAppSettings, formatCurrency } from '../hooks/useAppSettings';
 
 export default function RepairsList() {
   const [repairs, setRepairs] = useState<Repair[]>([]);
@@ -35,6 +36,7 @@ export default function RepairsList() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const settings = useAppSettings();
 
   // Formulaire de réparation
   const [repairForm, setRepairForm] = useState({
@@ -252,7 +254,7 @@ export default function RepairsList() {
                   <TableCell>{getVehicleInfo(repair.vehicleId)}</TableCell>
                   <TableCell>{getStatusBadge(repair.status)}</TableCell>
                   <TableCell>{getPriorityBadge(repair.priority)}</TableCell>
-                  <TableCell>{repair.estimatedCost}€</TableCell>
+                  <TableCell>{formatCurrency(repair.estimatedCost, settings.currency)}</TableCell>
                   <TableCell>{new Date(repair.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -371,7 +373,7 @@ export default function RepairsList() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="estimatedCost">Coût estimé (€)</Label>
+              <Label htmlFor="estimatedCost">Coût estimé ({settings.currency.symbol})</Label>
               <Input
                 id="estimatedCost"
                 type="number"
@@ -389,7 +391,7 @@ export default function RepairsList() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="laborCost">Coût main d'œuvre (€)</Label>
+              <Label htmlFor="laborCost">Coût main d'œuvre ({settings.currency.symbol})</Label>
               <Input
                 id="laborCost"
                 type="number"
@@ -444,7 +446,7 @@ export default function RepairsList() {
                 <Card>
                   <CardContent className="pt-6">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{selectedRepair.estimatedCost}€</p>
+                      <p className="text-2xl font-bold">{formatCurrency(selectedRepair.estimatedCost, settings.currency)}</p>
                       <p className="text-sm text-muted-foreground">Coût estimé</p>
                     </div>
                   </CardContent>
@@ -460,7 +462,7 @@ export default function RepairsList() {
                 <Card>
                   <CardContent className="pt-6">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{selectedRepair.laborCost}€</p>
+                      <p className="text-2xl font-bold">{formatCurrency(selectedRepair.laborCost, settings.currency)}</p>
                       <p className="text-sm text-muted-foreground">Main d'œuvre</p>
                     </div>
                   </CardContent>
